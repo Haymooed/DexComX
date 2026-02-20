@@ -4,6 +4,16 @@ DexComX is the rebranded successor to DexScript-V3, maintained by **haymooed**.
 
 It is a script-driven admin toolkit for BallsDex that lets owners create, update, filter, view, and remove model data quickly from Discord.
 
+# Quick Install
+```
+[[ballsdex.packages]]
+location = "git+https://github.com/Haymooed/DexComX.git"
+path = "dexscript_app"
+enabled = true
+editable = false
+```
+Command File
+
 ## What changed in DexComX
 
 DexComX changes how commands are parsed and executed:
