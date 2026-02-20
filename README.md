@@ -12,7 +12,16 @@ path = "dexscript_app"
 enabled = true
 editable = false
 ```
-Command File
+# Lost?
+
+Return back to the website for help and more details
+https://haymooed.github.io/DexComX/
+
+> [!TIP]
+> Suggested to return back to the website.
+
+
+---
 
 ## What changed in DexComX
 
