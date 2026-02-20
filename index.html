@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DexComX — Scripting Toolkit for BallsDex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --bg2: #0f1117;
+    --bg3: #161b24;
+    --surface: #1a2030;
+    --surface2: #1e2638;
+    --border: #252d3d;
+    --accent: #03bafc;
+    --accent2: #0077ff;
+    --accent-glow: rgba(3,186,252,0.18);
+    --accent-soft: rgba(3,186,252,0.08);
+    --green: #2deba0;
+    --orange: #ff8c42;
+    --red: #ff4d6d;
+    --purple: #a78bfa;
+    --text: #e2e8f0;
+    --text2: #8b96ab;
+    --text3: #5a6478;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Syne', sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* ── GRID BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── LAYOUT ── */
+  .app { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 14px;
+    color: #000;
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  .logo-text { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-text span { color: var(--accent); }
+
+  .logo-sub { font-size: 11px; color: var(--text3); font-family: var(--font-mono); margin-top: 2px; }
+
+  .sidebar-nav { padding: 16px 12px; flex: 1; }
+
+  .nav-section { margin-bottom: 8px; }
+
+  .nav-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--text3);
+    text-transform: uppercase;
+    padding: 6px 8px 4px;
+    font-family: var(--font-mono);
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    text-decoration: none;
+    margin-bottom: 2px;
+  }
+
+  .nav-item:hover { background: var(--surface); color: var(--text); }
+  .nav-item.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: rgba(3,186,252,0.2);
+  }
+
+  .nav-item .nav-icon {
+    width: 16px; height: 16px;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  .nav-item.active .nav-icon { opacity: 1; }
+
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .author-tag {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .author-tag .dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse-dot 2s infinite; }
+
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── MAIN ── */
+  .main { flex: 1; overflow-y: auto; }
+
+  /* ── PAGES ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 60px 60px;
+    max-width: 900px;
+    animation: fadeUp 0.5s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-eyebrow::before { content: ''; display: block; width: 30px; height: 1px; background: var(--accent); }
+
+  .hero h1 {
+    font-size: clamp(48px, 6vw, 72px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 .glow {
+    color: var(--accent);
+    text-shadow: 0 0 40px rgba(3,186,252,0.5);
+  }
+
+  .hero-desc {
+    font-size: 16px;
+    color: var(--text2);
+    line-height: 1.7;
+    max-width: 600px;
+    margin-bottom: 40px;
+    font-family: var(--font-mono);
+  }
+
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    text-decoration: none;
+    font-family: var(--font-sans);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    box-shadow: 0 0 30px rgba(3,186,252,0.3);
+  }
+
+  .btn-primary:hover {
+    background: #1ac7ff;
+    box-shadow: 0 0 40px rgba(3,186,252,0.5);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    background: var(--surface2);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── CARDS ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    padding: 0 60px 60px;
+  }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    border-color: var(--accent);
+    background: var(--surface);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(3,186,252,0.1);
+  }
+
+  .card-icon {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .card p { font-size: 12px; color: var(--text2); line-height: 1.5; font-family: var(--font-mono); }
+
+  /* ── SECTION ── */
+  .section {
+    padding: 0 60px 60px;
+    max-width: 1000px;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .section-header {
+    margin-bottom: 32px;
+    padding-top: 60px;
+  }
+
+  .section-header h2 {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+
+  .section-header h2 span { color: var(--accent); }
+  .section-header p { font-size: 14px; color: var(--text2); font-family: var(--font-mono); }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .code-copy {
+    font-size: 11px;
+    color: var(--text3);
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: var(--font-mono);
+    transition: all 0.15s;
+  }
+
+  .code-copy:hover { color: var(--accent); border-color: var(--accent); }
+
+  .code-content {
+    padding: 20px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+
+  .code-content .kw { color: var(--accent); font-weight: 700; }
+  .code-content .op { color: var(--text3); }
+  .code-content .val { color: var(--green); }
+  .code-content .comment { color: var(--text3); font-style: italic; }
+  .code-content .str { color: var(--orange); }
+  .code-content .num { color: var(--purple); }
+
+  /* ── TABLE ── */
+  .cmd-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    margin-bottom: 32px;
+  }
+
+  .cmd-table thead tr {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cmd-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 600;
+  }
+
+  .cmd-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(37,45,61,0.5);
+    vertical-align: top;
+  }
+
+  .cmd-table tr:hover td { background: var(--accent-soft); }
+
+  .cmd-table .cmd-name { color: var(--accent); font-weight: 600; }
+  .cmd-table .cmd-syntax { color: var(--green); }
+  .cmd-table .cmd-desc { color: var(--text2); }
+  .cmd-table .tag {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid rgba(3,186,252,0.2);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 11px;
+  }
+
+  .table-wrap {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+
+  /* ── COMMAND BUILDER ── */
+  .builder-wrap {
+    padding: 60px;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .builder-header { margin-bottom: 36px; }
+  .builder-header h2 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+  .builder-header h2 span { color: var(--accent); }
+  .builder-header p { font-size: 14px; color: var(--text2); font-family: var(--font-mono); }
+
+  .builder-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 700px) { .builder-grid { grid-template-columns: 1fr; } }
+
+  .field-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .field-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-family: var(--font-mono);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .field-label .req { color: var(--red); }
+  .field-label .opt { color: var(--text3); }
+
+  .field-input, .field-select {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  .field-input:focus, .field-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .field-select option { background: var(--bg3); }
+
+  .builder-output {
+    background: var(--bg3);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: 0 0 30px var(--accent-glow);
+  }
+
+  .builder-output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .builder-output-label {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--accent);
+    letter-spacing: 1px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .builder-output-content {
+    padding: 20px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--text);
+    min-height: 60px;
+    word-break: break-all;
+  }
+
+  .generated-cmd { color: var(--green); }
+  .generated-cmd .kw { color: var(--accent); font-weight: 700; }
+  .generated-cmd .sep { color: var(--text3); }
+  .generated-cmd .val { color: var(--green); }
+  .generated-cmd .opt-val { color: var(--orange); }
+  .generated-cmd .placeholder { color: var(--text3); font-style: italic; }
+
+  .builder-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+  .separator-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .sep-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .sep-btn.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .sep-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .sep-label { font-size: 12px; color: var(--text3); font-family: var(--font-mono); align-self: center; }
+
+  /* ── ALIAS TABLE ── */
+  .alias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .alias-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .alias-from { font-family: var(--font-mono); font-size: 14px; color: var(--orange); font-weight: 700; }
+  .alias-arrow { color: var(--text3); }
+  .alias-to { font-family: var(--font-mono); font-size: 14px; color: var(--accent); }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+  }
+
+  .badge-opt { background: rgba(255,140,66,0.1); color: var(--orange); border: 1px solid rgba(255,140,66,0.3); }
+  .badge-req { background: rgba(255,77,109,0.1); color: var(--red); border: 1px solid rgba(255,77,109,0.3); }
+  .badge-new { background: rgba(3,186,252,0.1); color: var(--accent); border: 1px solid rgba(3,186,252,0.3); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ── INFOBOX ── */
+  .infobox {
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    line-height: 1.5;
+  }
+
+  .infobox-info { background: rgba(3,186,252,0.07); border-left: 3px solid var(--accent); color: var(--text2); }
+  .infobox-warn { background: rgba(255,140,66,0.07); border-left: 3px solid var(--orange); color: var(--text2); }
+  .infobox-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .hero { padding: 40px 24px 32px; }
+    .cards-grid { padding: 0 24px 32px; }
+    .section { padding: 0 24px 32px; }
+    .builder-wrap { padding: 24px; }
+  }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text);
+    outline: none;
+  }
+
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text3); }
+
+  /* ── VERSION TAG ── */
+  .version-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-soft);
+    border: 1px solid rgba(3,186,252,0.2);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .sub-heading {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 28px 0 12px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sub-heading::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-badge">
+        <div class="logo-icon">DX</div>
+        <div>
+          <div class="logo-text">Dex<span>ComX</span></div>
+          <div class="logo-sub">v1.0 — BallsDex Toolkit</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <input class="search-input" placeholder="🔍  Search docs..." id="searchInput" oninput="filterNav(this.value)">
+    </div>
+
+    <nav class="sidebar-nav" id="sidebarNav">
+      <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item active" onclick="showPage('home')">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Overview
+        </a>
+        <a class="nav-item" onclick="showPage('syntax')">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+          Syntax & Modes
+        </a>
+        <a class="nav-item" onclick="showPage('aliases')">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+          Aliases
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Command Reference</div>
+        <a class="nav-item" onclick="showPage('global')">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Global Commands
+        </a>
+        <a class="nav-item" onclick="showPage('filter')">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+          Filter Commands
+        </a>
+        <a class="nav-item" onclick="showPage('eval')">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+          Eval Presets
+        </a>
+        <a class="nav-item" onclick="showPage('file')">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          File System
+        </a>
+        <a class="nav-item" onclick="showPage('template')">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
+          Templates
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Tools</div>
+        <a class="nav-item" onclick="showPage('builder')">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Command Builder
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="author-tag">
+        <span class="dot"></span>
+        Maintained by haymooed
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HOME PAGE -->
+    <div class="page active" id="page-home">
+      <div class="hero">
+        <div class="version-tag">✦ v1.0 Stable</div>
+        <div class="hero-eyebrow">BallsDex Admin Toolkit</div>
+        <h1>Dex<span class="glow">ComX</span></h1>
+        <p class="hero-desc">A script-driven command suite for BallsDex. Create, update, filter, view, and remove model data from Discord with flexible syntax and powerful aliases.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="showPage('builder')">⚡ Command Builder</button>
+          <button class="btn btn-secondary" onclick="showPage('global')">📖 Reference Docs</button>
+        </div>
+      </div>
+
+      <div class="cards-grid">
+        <div class="card" onclick="showPage('syntax')">
+          <div class="card-icon" style="background:rgba(3,186,252,0.1);">🔀</div>
+          <h3>Multi-Separator Syntax</h3>
+          <p>Use <code>&gt;</code>, <code>::</code>, or <code>=&gt;</code> interchangeably in any command.</p>
+        </div>
+        <div class="card" onclick="showPage('aliases')">
+          <div class="card-icon" style="background:rgba(45,235,160,0.1);">⚡</div>
+          <h3>Speed Aliases</h3>
+          <p><code>set</code>, <code>show</code>, <code>rm</code>, <code>ls</code>, <code>fields</code> — write scripts faster.</p>
+        </div>
+        <div class="card" onclick="showPage('filter')">
+          <div class="card-icon" style="background:rgba(167,139,250,0.1);">🎯</div>
+          <h3>Filter & Bulk Ops</h3>
+          <p>Mass update, delete, or view rows matching any attribute condition.</p>
+        </div>
+        <div class="card" onclick="showPage('eval')">
+          <div class="card-icon" style="background:rgba(255,140,66,0.1);">💾</div>
+          <h3>Eval Presets</h3>
+          <p>Save, list, and run Python eval scripts directly from Discord.</p>
+        </div>
+        <div class="card" onclick="showPage('file')">
+          <div class="card-icon" style="background:rgba(255,77,109,0.1);">📂</div>
+          <h3>File System</h3>
+          <p>Read, write, clear, list, and delete files on the bot's host.</p>
+        </div>
+        <div class="card" onclick="showPage('builder')">
+          <div class="card-icon" style="background:rgba(3,186,252,0.15);">🛠️</div>
+          <h3>Command Builder</h3>
+          <p>Fill in a form and instantly get a ready-to-paste DexComX command.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sub-heading">Quick Start</div>
+        <div class="infobox infobox-info">
+          <span class="infobox-icon">ℹ️</span>
+          All commands are owner-only. Use <code>run &lt;script&gt;</code> (or <code>o.run</code>) in Discord to execute.
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">DEXCOMX</span>
+            <button class="code-copy" onclick="copyCode(this)">copy</button>
+          </div>
+          <div class="code-content">
+<span class="comment">-- Create a new ball and configure it</span>
+<span class="kw">CREATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">NewCountry</span>
+<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">NewCountry</span> <span class="op">&gt;</span> <span class="val">HEALTH</span> <span class="op">&gt;</span> <span class="num">100</span>
+<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">NewCountry</span> <span class="op">&gt;</span> <span class="val">ATTACK</span> <span class="op">&gt;</span> <span class="num">90</span>
+<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">NewCountry</span> <span class="op">&gt;</span> <span class="val">REGIME</span> <span class="op">&gt;</span> <span class="str">Democracy</span>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">SCOPED MODE</span>
+            <button class="code-copy" onclick="copyCode(this)">copy</button>
+          </div>
+          <div class="code-content">
+<span class="comment">-- Bulk update using filter + scoped mode</span>
+<span class="kw">FILTER.UPDATE</span> <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="val">REGIME</span> <span class="op">::</span> <span class="str">Democracy</span> <span class="op">::</span> <span class="str">Republic</span>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">ALIASES</span>
+            <button class="code-copy" onclick="copyCode(this)">copy</button>
+          </div>
+          <div class="code-content">
+<span class="comment">-- Using aliases for faster scripting</span>
+<span class="kw">set</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">France</span> <span class="op">&gt;</span> <span class="val">HEALTH</span> <span class="op">&gt;</span> <span class="num">105</span>
+<span class="kw">show</span> <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="str">France</span>
+<span class="kw">FILE.ls</span> <span class="op">=&gt;</span> <span class="str">./</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYNTAX PAGE -->
+    <div class="page" id="page-syntax">
+      <div class="section">
+        <div class="section-header">
+          <h2>Syntax <span>&amp; Modes</span></h2>
+          <p>Three execution modes, three interchangeable separators</p>
+        </div>
+
+        <div class="sub-heading">Separators</div>
+        <p style="font-family:var(--font-mono);font-size:13px;color:var(--text2);margin-bottom:16px;">Any of these separators can be used interchangeably in any command:</p>
+        <div class="alias-grid" style="margin-bottom:24px;">
+          <div class="alias-card"><span class="alias-from">&gt;</span><span class="alias-arrow">—</span><span class="alias-to">Classic separator</span></div>
+          <div class="alias-card"><span class="alias-from">::</span><span class="alias-arrow">—</span><span class="alias-to">Scoped separator</span></div>
+          <div class="alias-card"><span class="alias-from">=&gt;</span><span class="alias-arrow">—</span><span class="alias-to">Arrow separator</span></div>
+        </div>
+
+        <div class="sub-heading">Classic Mode</div>
+        <div class="infobox infobox-info">
+          <span class="infobox-icon">ℹ️</span>
+          Legacy-compatible format. Works with the original DexScript-V3 scripts.
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">CLASSIC</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content">
+<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">France</span> <span class="op">&gt;</span> <span class="val">HEALTH</span> <span class="op">&gt;</span> <span class="num">100</span>
+          </div>
+        </div>
+
+        <div class="sub-heading">Scoped Mode</div>
+        <div class="infobox infobox-info">
+          <span class="infobox-icon">✦</span>
+          Use dot-notation to scope to a command class, then chain with any separator.
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">SCOPED</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content">
+<span class="kw">FILTER.UPDATE</span> <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="val">REGIME</span> <span class="op">::</span> <span class="str">Democracy</span> <span class="op">::</span> <span class="str">Republic</span>
+<span class="kw">FILTER.VIEW</span>   <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="val">REGIME</span> <span class="op">::</span> <span class="str">Democracy</span>
+<span class="kw">FILE.READ</span>     <span class="op">::</span> <span class="str">./settings.json</span>
+          </div>
+        </div>
+
+        <div class="sub-heading">Slash-Style Tokens</div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">SLASH-STYLE</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content">
+<span class="kw">/show</span>  <span class="op">=&gt;</span> <span class="val">BALL</span> <span class="op">=&gt;</span> <span class="str">France</span> <span class="op">=&gt;</span> <span class="val">HEALTH</span>
+<span class="kw">/rm</span>    <span class="op">=&gt;</span> <span class="val">BALL</span> <span class="op">=&gt;</span> <span class="str">France</span>
+          </div>
+        </div>
+
+        <div class="sub-heading">Comments</div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">COMMENTS</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content">
+<span class="comment">-- this line will be ignored</span>
+<span class="kw">CREATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">NewCountry</span>
+          </div>
+        </div>
+
+        <div class="sub-heading">Batch Execution</div>
+        <div class="infobox infobox-warn">
+          <span class="infobox-icon">⚠️</span>
+          DexComX accepts batch pastes where each line starts with <code>o.run</code> or <code>run</code>. Markdown code fences are stripped automatically.
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">BATCH</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content">
+b.run
+```sql
+<span class="kw">CREATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">A</span>
+<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">A</span> <span class="op">&gt;</span> <span class="val">REGIME</span> <span class="op">&gt;</span> <span class="str">Communist</span>
+<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">A</span> <span class="op">&gt;</span> <span class="val">HEALTH</span> <span class="op">&gt;</span> <span class="num">100</span>
+<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">A</span> <span class="op">&gt;</span> <span class="val">ATTACK</span> <span class="op">&gt;</span> <span class="num">90</span>
+```
+          </div>
+        </div>
+
+        <div class="sub-heading">Available Models</div>
+        <div class="alias-grid">
+          <div class="alias-card"><span class="alias-from">BALL</span></div>
+          <div class="alias-card"><span class="alias-from">REGIME</span></div>
+          <div class="alias-card"><span class="alias-from">ECONOMY</span></div>
+          <div class="alias-card"><span class="alias-from">SPECIAL</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALIASES PAGE -->
+    <div class="page" id="page-aliases">
+      <div class="section">
+        <div class="section-header">
+          <h2><span>Aliases</span></h2>
+          <p>Built-in shortcuts for faster scripting</p>
+        </div>
+        <div class="alias-grid">
+          <div class="alias-card"><span class="alias-from">set</span><span class="alias-arrow">→</span><span class="alias-to">update</span></div>
+          <div class="alias-card"><span class="alias-from">show</span><span class="alias-arrow">→</span><span class="alias-to">view</span></div>
+          <div class="alias-card"><span class="alias-from">fields</span><span class="alias-arrow">→</span><span class="alias-to">attributes</span></div>
+          <div class="alias-card"><span class="alias-from">rm</span><span class="alias-arrow">→</span><span class="alias-to">delete</span></div>
+          <div class="alias-card"><span class="alias-from">del</span><span class="alias-arrow">→</span><span class="alias-to">delete</span></div>
+          <div class="alias-card"><span class="alias-from">ls</span><span class="alias-arrow">→</span><span class="alias-to">listdir</span></div>
+        </div>
+
+        <div class="sub-heading">Examples</div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">ALIAS EXAMPLES</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content">
+<span class="comment">-- set is shorthand for UPDATE</span>
+<span class="kw">set</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">France</span> <span class="op">&gt;</span> <span class="val">HEALTH</span> <span class="op">&gt;</span> <span class="num">105</span>
+
+<span class="comment">-- show is shorthand for VIEW</span>
+<span class="kw">show</span> <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="str">France</span>
+
+<span class="comment">-- rm and del both map to DELETE</span>
+<span class="kw">rm</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">OldBall</span>
+
+<span class="comment">-- ls maps to FILE.LISTDIR</span>
+<span class="kw">FILE.ls</span> <span class="op">=&gt;</span> <span class="str">./</span>
+
+<span class="comment">-- fields maps to ATTRIBUTES</span>
+<span class="kw">fields</span> <span class="op">&gt;</span> <span class="val">BALL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GLOBAL COMMANDS PAGE -->
+    <div class="page" id="page-global">
+      <div class="section">
+        <div class="section-header">
+          <h2>Global <span>Commands</span></h2>
+          <p>Core operations for managing model instances</p>
+        </div>
+
+        <!-- CREATE -->
+        <div class="sub-heading">CREATE</div>
+        <div class="infobox infobox-info">
+          <span class="infobox-icon">＋</span>
+          Creates a new model instance with required fields populated automatically.
+        </div>
+        <div class="table-wrap">
+          <table class="cmd-table">
+            <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="cmd-name">MODEL</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">BALL, REGIME, ECONOMY, or SPECIAL</td></tr>
+              <tr><td class="cmd-name">IDENTIFIER</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">The name/identifier for the new instance</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">SYNTAX</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">CREATE</span> <span class="op">&gt;</span> <span class="val">MODEL</span> <span class="op">&gt;</span> <span class="str">IDENTIFIER</span></div>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">EXAMPLE</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">CREATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">Germany</span></div>
+        </div>
+
+        <!-- DELETE -->
+        <div class="sub-heading">DELETE</div>
+        <div class="infobox infobox-warn">
+          <span class="infobox-icon">⚠️</span>
+          Permanently deletes the model instance. Aliases: <code>rm</code>, <code>del</code>
+        </div>
+        <div class="table-wrap">
+          <table class="cmd-table">
+            <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="cmd-name">MODEL</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Model class to target</td></tr>
+              <tr><td class="cmd-name">IDENTIFIER</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Name of the instance to delete</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">SYNTAX</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">DELETE</span> <span class="op">&gt;</span> <span class="val">MODEL</span> <span class="op">&gt;</span> <span class="str">IDENTIFIER</span></div>
+        </div>
+
+        <!-- UPDATE -->
+        <div class="sub-heading">UPDATE</div>
+        <div class="infobox infobox-info">
+          <span class="infobox-icon">✎</span>
+          Updates one attribute. If VALUE is omitted on an image field, the attached file is used. Alias: <code>set</code>
+        </div>
+        <div class="table-wrap">
+          <table class="cmd-table">
+            <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="cmd-name">MODEL</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Model class</td></tr>
+              <tr><td class="cmd-name">IDENTIFIER</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Instance name</td></tr>
+              <tr><td class="cmd-name">ATTRIBUTE</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Field name to change</td></tr>
+              <tr><td class="cmd-name">VALUE</td><td><span class="badge badge-opt">optional</span></td><td class="cmd-desc">New value. Omit for image fields with file attachment.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">SYNTAX</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">MODEL</span> <span class="op">&gt;</span> <span class="str">IDENTIFIER</span> <span class="op">&gt;</span> <span class="val">ATTRIBUTE</span> <span class="op">&gt;</span> <span class="str">VALUE</span></div>
+        </div>
+
+        <!-- VIEW -->
+        <div class="sub-heading">VIEW</div>
+        <div class="infobox infobox-info">
+          <span class="infobox-icon">👁</span>
+          Show one field, or all fields when ATTRIBUTE is omitted. Alias: <code>show</code>
+        </div>
+        <div class="table-wrap">
+          <table class="cmd-table">
+            <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="cmd-name">MODEL</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Model class</td></tr>
+              <tr><td class="cmd-name">IDENTIFIER</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Instance name</td></tr>
+              <tr><td class="cmd-name">ATTRIBUTE</td><td><span class="badge badge-opt">optional</span></td><td class="cmd-desc">Specific field to show. Omit to see all fields.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">SYNTAX</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">VIEW</span> <span class="op">&gt;</span> <span class="val">MODEL</span> <span class="op">&gt;</span> <span class="str">IDENTIFIER</span> <span class="op">&gt;</span> <span class="val">ATTRIBUTE</span><span class="comment"> (optional)</span></div>
+        </div>
+
+        <!-- ATTRIBUTES -->
+        <div class="sub-heading">ATTRIBUTES</div>
+        <div class="infobox infobox-info">
+          <span class="infobox-icon">📋</span>
+          Lists all editable fields on a model. Alias: <code>fields</code>
+        </div>
+        <div class="table-wrap">
+          <table class="cmd-table">
+            <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td class="cmd-name">MODEL</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Model class</td></tr>
+              <tr><td class="cmd-name">FILTER</td><td><span class="badge badge-opt">optional</span></td><td class="cmd-desc"><code>NULL</code> — only nullable fields. <code>VALID</code> — only non-nullable fields.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">SYNTAX</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">ATTRIBUTES</span> <span class="op">&gt;</span> <span class="val">MODEL</span> <span class="op">&gt;</span> <span class="str">NULL|VALID</span><span class="comment"> (optional)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTER COMMANDS PAGE -->
+    <div class="page" id="page-filter">
+      <div class="section">
+        <div class="section-header">
+          <h2>Filter <span>Commands</span></h2>
+          <p>Bulk operations on matching rows</p>
+        </div>
+
+        <div class="infobox infobox-info">
+          <span class="infobox-icon">ℹ️</span>
+          All filter commands support an optional <code>OPERATOR</code> argument which maps to a Django ORM lookup (e.g. <code>icontains</code>, <code>startswith</code>, <code>lt</code>, <code>gt</code>).
+        </div>
+
+        <div class="sub-heading">FILTER.UPDATE</div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">SYNTAX</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">FILTER</span> <span class="op">&gt;</span> <span class="val">UPDATE</span> <span class="op">&gt;</span> <span class="str">MODEL</span> <span class="op">&gt;</span> <span class="val">ATTRIBUTE</span> <span class="op">&gt;</span> <span class="str">OLD_VALUE</span> <span class="op">&gt;</span> <span class="str">NEW_VALUE</span> <span class="op">&gt;</span> <span class="val">OPERATOR</span><span class="comment"> (?)</span></div>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">EXAMPLE</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">FILTER.UPDATE</span> <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="val">REGIME</span> <span class="op">::</span> <span class="str">Democracy</span> <span class="op">::</span> <span class="str">Republic</span></div>
+        </div>
+
+        <div class="sub-heading">FILTER.DELETE</div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">SYNTAX</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">FILTER</span> <span class="op">&gt;</span> <span class="val">DELETE</span> <span class="op">&gt;</span> <span class="str">MODEL</span> <span class="op">&gt;</span> <span class="val">ATTRIBUTE</span> <span class="op">&gt;</span> <span class="str">VALUE</span> <span class="op">&gt;</span> <span class="val">OPERATOR</span><span class="comment"> (?)</span></div>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">EXAMPLE</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">FILTER.DELETE</span> <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="val">REGIME</span> <span class="op">::</span> <span class="str">Communist</span></div>
+        </div>
+
+        <div class="sub-heading">FILTER.VIEW</div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">SYNTAX</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">FILTER</span> <span class="op">&gt;</span> <span class="val">VIEW</span> <span class="op">&gt;</span> <span class="str">MODEL</span> <span class="op">&gt;</span> <span class="val">ATTRIBUTE</span> <span class="op">&gt;</span> <span class="str">VALUE</span> <span class="op">&gt;</span> <span class="val">OPERATOR</span><span class="comment"> (?)</span></div>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">EXAMPLE</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">FILTER.VIEW</span> <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="val">HEALTH</span> <span class="op">::</span> <span class="num">100</span> <span class="op">::</span> <span class="str">gt</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVAL PAGE -->
+    <div class="page" id="page-eval">
+      <div class="section">
+        <div class="section-header">
+          <h2>Eval <span>Presets</span></h2>
+          <p>Save and run Python eval scripts from Discord</p>
+        </div>
+        <div class="table-wrap">
+          <table class="cmd-table">
+            <thead><tr><th>Command</th><th>Syntax</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="cmd-name">EVAL.SAVE</td>
+                <td class="cmd-syntax">EVAL &gt; SAVE &gt; NAME</td>
+                <td class="cmd-desc">Prompts for eval code and saves it as a preset file</td>
+              </tr>
+              <tr>
+                <td class="cmd-name">EVAL.REMOVE</td>
+                <td class="cmd-syntax">EVAL &gt; REMOVE &gt; NAME</td>
+                <td class="cmd-desc">Deletes a saved preset by name</td>
+              </tr>
+              <tr>
+                <td class="cmd-name">EVAL.LIST</td>
+                <td class="cmd-syntax">EVAL &gt; LIST</td>
+                <td class="cmd-desc">Lists all saved eval presets</td>
+              </tr>
+              <tr>
+                <td class="cmd-name">EVAL.RUN</td>
+                <td class="cmd-syntax">EVAL &gt; RUN &gt; NAME</td>
+                <td class="cmd-desc">Executes a saved preset</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="infobox infobox-warn">
+          <span class="infobox-icon">⚠️</span>
+          Preset names are capped at 100 characters. After sending <code>EVAL &gt; SAVE &gt; name</code>, the bot will prompt you to send the eval code within 20 seconds.
+        </div>
+      </div>
+    </div>
+
+    <!-- FILE PAGE -->
+    <div class="page" id="page-file">
+      <div class="section">
+        <div class="section-header">
+          <h2>File <span>System</span></h2>
+          <p>Read, write, and manage files on the bot's host</p>
+        </div>
+        <div class="table-wrap">
+          <table class="cmd-table">
+            <thead><tr><th>Command</th><th>Syntax</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="cmd-name">FILE.READ</td>
+                <td class="cmd-syntax">FILE &gt; READ &gt; FILE_PATH</td>
+                <td class="cmd-desc">Sends the file at the specified path as a Discord attachment</td>
+              </tr>
+              <tr>
+                <td class="cmd-name">FILE.WRITE</td>
+                <td class="cmd-syntax">FILE &gt; WRITE &gt; FILE_PATH</td>
+                <td class="cmd-desc">Writes the content of an attached file to the specified path</td>
+              </tr>
+              <tr>
+                <td class="cmd-name">FILE.CLEAR</td>
+                <td class="cmd-syntax">FILE &gt; CLEAR &gt; FILE_PATH</td>
+                <td class="cmd-desc">Empties the content of a file without deleting it</td>
+              </tr>
+              <tr>
+                <td class="cmd-name">FILE.LISTDIR</td>
+                <td class="cmd-syntax">FILE &gt; LISTDIR &gt; FILE_PATH(?)</td>
+                <td class="cmd-desc">Lists directory contents. Defaults to current directory if omitted. Alias: <code>ls</code></td>
+              </tr>
+              <tr>
+                <td class="cmd-name">FILE.DELETE</td>
+                <td class="cmd-syntax">FILE &gt; DELETE &gt; FILE_PATH</td>
+                <td class="cmd-desc">Deletes a file or entire directory (uses shutil.rmtree for dirs)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">EXAMPLES</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content">
+<span class="comment">-- List current directory</span>
+<span class="kw">FILE.ls</span> <span class="op">=&gt;</span> <span class="str">./</span>
+
+<span class="comment">-- Read a config file</span>
+<span class="kw">FILE.READ</span> <span class="op">&gt;</span> <span class="str">./config.json</span>
+
+<span class="comment">-- Write an attachment to a path</span>
+<span class="kw">FILE.WRITE</span> <span class="op">&gt;</span> <span class="str">./settings.py</span>
+
+<span class="comment">-- Clear a log file</span>
+<span class="kw">FILE.CLEAR</span> <span class="op">&gt;</span> <span class="str">./logs/error.log</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEMPLATE PAGE -->
+    <div class="page" id="page-template">
+      <div class="section">
+        <div class="section-header">
+          <h2><span>Templates</span></h2>
+          <p>Starter command scaffolding for quick model setup</p>
+        </div>
+        <div class="infobox infobox-info">
+          <span class="infobox-icon">ℹ️</span>
+          <code>TEMPLATE.CREATE</code> sends a pre-filled block of commands you can copy and adapt.
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">SYNTAX</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content"><span class="kw">TEMPLATE</span> <span class="op">&gt;</span> <span class="val">CREATE</span> <span class="op">&gt;</span> <span class="str">MODEL</span> <span class="op">&gt;</span> <span class="val">ARGUMENT</span><span class="comment"> (optional)</span></div>
+        </div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">BALL TEMPLATE OUTPUT</span><button class="code-copy" onclick="copyCode(this)">copy</button></div>
+          <div class="code-content">
+<span class="kw">CREATE</span>  <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span>
+<span class="kw">UPDATE</span>  <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">REGIME</span>               <span class="op">&gt;</span> <span class="str">...</span>
+<span class="kw">UPDATE</span>  <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">HEALTH</span>               <span class="op">&gt;</span> <span class="str">...</span>
+<span class="kw">UPDATE</span>  <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">ATTACK</span>               <span class="op">&gt;</span> <span class="str">...</span>
+<span class="kw">UPDATE</span>  <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">RARITY</span>               <span class="op">&gt;</span> <span class="str">...</span>
+<span class="kw">UPDATE</span>  <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">EMOJI_ID</span>             <span class="op">&gt;</span> <span class="str">...</span>
+<span class="kw">UPDATE</span>  <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">CREDITS</span>             <span class="op">&gt;</span> <span class="str">...</span>
+<span class="kw">UPDATE</span>  <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">CAPACITY_NAME</span>       <span class="op">&gt;</span> <span class="str">...</span>
+<span class="kw">UPDATE</span>  <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">CAPACITY_DESCRIPTION</span> <span class="op">&gt;</span> <span class="str">...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMAND BUILDER PAGE -->
+    <div class="page" id="page-builder">
+      <div class="builder-wrap">
+        <div class="builder-header">
+          <h2>Command <span>Builder</span></h2>
+          <p>Fill in the fields below to generate a ready-to-paste DexComX command</p>
+        </div>
+
+        <!-- SEPARATOR PICKER -->
+        <div class="field-group" style="margin-bottom:20px;">
+          <div class="field-label">Separator Style</div>
+          <div class="separator-row">
+            <button class="sep-btn active" id="sep-classic" onclick="setSep('>')">  &gt;  Classic</button>
+            <button class="sep-btn" id="sep-scoped" onclick="setSep('::')">  ::  Scoped</button>
+            <button class="sep-btn" id="sep-arrow" onclick="setSep('=>')">  =&gt;  Arrow</button>
+          </div>
+        </div>
+
+        <!-- COMMAND TYPE -->
+        <div class="builder-grid">
+          <div class="field-group">
+            <label class="field-label">Command <span class="req">*</span></label>
+            <select class="field-select" id="b-command" onchange="onCommandChange()">
+              <optgroup label="Global">
+                <option value="CREATE">CREATE</option>
+                <option value="DELETE">DELETE</option>
+                <option value="UPDATE" selected>UPDATE</option>
+                <option value="VIEW">VIEW</option>
+                <option value="ATTRIBUTES">ATTRIBUTES</option>
+              </optgroup>
+              <optgroup label="Filter">
+                <option value="FILTER.UPDATE">FILTER.UPDATE</option>
+                <option value="FILTER.DELETE">FILTER.DELETE</option>
+                <option value="FILTER.VIEW">FILTER.VIEW</option>
+              </optgroup>
+              <optgroup label="Eval">
+                <option value="EVAL.SAVE">EVAL.SAVE</option>
+                <option value="EVAL.REMOVE">EVAL.REMOVE</option>
+                <option value="EVAL.LIST">EVAL.LIST</option>
+                <option value="EVAL.RUN">EVAL.RUN</option>
+              </optgroup>
+              <optgroup label="File">
+                <option value="FILE.READ">FILE.READ</option>
+                <option value="FILE.WRITE">FILE.WRITE</option>
+                <option value="FILE.CLEAR">FILE.CLEAR</option>
+                <option value="FILE.LISTDIR">FILE.LISTDIR</option>
+                <option value="FILE.DELETE">FILE.DELETE</option>
+              </optgroup>
+              <optgroup label="Template">
+                <option value="TEMPLATE.CREATE">TEMPLATE.CREATE</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="field-group" id="b-model-group">
+            <label class="field-label">Model <span class="req">*</span></label>
+            <select class="field-select" id="b-model" onchange="buildCommand()">
+              <option value="BALL">BALL</option>
+              <option value="REGIME">REGIME</option>
+              <option value="ECONOMY">ECONOMY</option>
+              <option value="SPECIAL">SPECIAL</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="builder-grid" id="b-row2">
+          <div class="field-group" id="b-identifier-group">
+            <label class="field-label" id="b-identifier-label">Identifier <span class="req">*</span></label>
+            <input class="field-input" id="b-identifier" placeholder="e.g. France" oninput="buildCommand()">
+          </div>
+
+          <div class="field-group" id="b-attribute-group">
+            <label class="field-label">Attribute <span class="req">*</span></label>
+            <input class="field-input" id="b-attribute" placeholder="e.g. HEALTH" oninput="buildCommand()">
+          </div>
+        </div>
+
+        <div class="builder-grid" id="b-row3" style="display:none;">
+          <div class="field-group" id="b-value-group">
+            <label class="field-label" id="b-value-label">Value <span class="opt">(optional)</span></label>
+            <input class="field-input" id="b-value" placeholder="e.g. 100" oninput="buildCommand()">
+          </div>
+
+          <div class="field-group" id="b-newvalue-group" style="display:none;">
+            <label class="field-label">New Value <span class="req">*</span></label>
+            <input class="field-input" id="b-newvalue" placeholder="e.g. Republic" oninput="buildCommand()">
+          </div>
+        </div>
+
+        <div class="builder-grid" id="b-row4" style="display:none;">
+          <div class="field-group" id="b-operator-group">
+            <label class="field-label">ORM Operator <span class="opt">(optional)</span></label>
+            <select class="field-select" id="b-operator" onchange="buildCommand()">
+              <option value="">— none —</option>
+              <option value="icontains">icontains</option>
+              <option value="startswith">startswith</option>
+              <option value="endswith">endswith</option>
+              <option value="lt">lt (less than)</option>
+              <option value="lte">lte (≤)</option>
+              <option value="gt">gt (greater than)</option>
+              <option value="gte">gte (≥)</option>
+              <option value="exact">exact</option>
+            </select>
+          </div>
+          <div class="field-group" id="b-filepath-group" style="display:none;">
+            <label class="field-label">File Path <span class="req">*</span></label>
+            <input class="field-input" id="b-filepath" placeholder="e.g. ./settings.json" oninput="buildCommand()">
+          </div>
+        </div>
+
+        <!-- OUTPUT -->
+        <div class="builder-output">
+          <div class="builder-output-header">
+            <span class="builder-output-label">⚡ Generated Command</span>
+            <button class="code-copy" onclick="copyBuilderOutput()">copy</button>
+          </div>
+          <div class="builder-output-content" id="b-output">
+            <span class="placeholder">Fill in the fields above...</span>
+          </div>
+        </div>
+
+        <div class="builder-actions">
+          <button class="btn btn-primary" onclick="copyBuilderOutput()">📋 Copy Command</button>
+          <button class="btn btn-secondary" onclick="resetBuilder()">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast">Copied to clipboard!</div>
+
+<script>
+  // ── STATE ──
+  let currentSep = '>';
+  let currentPage = 'home';
+
+  // ── NAVIGATION ──
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    // find the nav-item that calls showPage(id)
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'")) {
+        n.classList.add('active');
+      }
+    });
+    currentPage = id;
+    window.scrollTo(0, 0);
+    document.querySelector('.main').scrollTo(0, 0);
+    if (id === 'builder') buildCommand();
+  }
+
+  // ── SEARCH ──
+  function filterNav(query) {
+    const q = query.toLowerCase();
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+    document.querySelectorAll('.nav-section-title').forEach(t => t.style.display = '');
+  }
+
+  // ── COPY ──
+  function copyCode(btn) {
+    const content = btn.closest('.code-block').querySelector('.code-content');
+    const text = content.innerText;
+    navigator.clipboard.writeText(text);
+    showToast('Copied!');
+    btn.textContent = '✓ copied';
+    setTimeout(() => btn.textContent = 'copy', 1500);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  // ── SEPARATOR ──
+  function setSep(sep) {
+    currentSep = sep;
+    document.querySelectorAll('.sep-btn').forEach(b => b.classList.remove('active'));
+    const map = { '>': 'sep-classic', '::': 'sep-scoped', '=>': 'sep-arrow' };
+    document.getElementById(map[sep]).classList.add('active');
+    buildCommand();
+  }
+
+  // ── BUILDER ──
+  const CMD_SCHEMAS = {
+    CREATE:          { model: true, identifier: true, attribute: false, value: false, newvalue: false, operator: false, filepath: false },
+    DELETE:          { model: true, identifier: true, attribute: false, value: false, newvalue: false, operator: false, filepath: false },
+    UPDATE:          { model: true, identifier: true, attribute: true,  value: true,  newvalue: false, operator: false, filepath: false },
+    VIEW:            { model: true, identifier: true, attribute: 'opt', value: false, newvalue: false, operator: false, filepath: false },
+    ATTRIBUTES:      { model: true, identifier: false,attribute: false, value: 'opt', newvalue: false, operator: false, filepath: false, valueLabel: 'Filter (NULL/VALID)' },
+    'FILTER.UPDATE': { model: true, identifier: false,attribute: true,  value: true,  newvalue: true,  operator: 'opt', filepath: false },
+    'FILTER.DELETE': { model: true, identifier: false,attribute: true,  value: true,  newvalue: false, operator: 'opt', filepath: false },
+    'FILTER.VIEW':   { model: true, identifier: false,attribute: true,  value: true,  newvalue: false, operator: 'opt', filepath: false },
+    'EVAL.SAVE':     { model: false, identifier: true, attribute: false, value: false, newvalue: false, operator: false, filepath: false, identifierLabel: 'Preset Name' },
+    'EVAL.REMOVE':   { model: false, identifier: true, attribute: false, value: false, newvalue: false, operator: false, filepath: false, identifierLabel: 'Preset Name' },
+    'EVAL.LIST':     { model: false, identifier: false,attribute: false, value: false, newvalue: false, operator: false, filepath: false },
+    'EVAL.RUN':      { model: false, identifier: true, attribute: false, value: false, newvalue: false, operator: false, filepath: false, identifierLabel: 'Preset Name' },
+    'FILE.READ':     { model: false, identifier: false,attribute: false, value: false, newvalue: false, operator: false, filepath: true },
+    'FILE.WRITE':    { model: false, identifier: false,attribute: false, value: false, newvalue: false, operator: false, filepath: true },
+    'FILE.CLEAR':    { model: false, identifier: false,attribute: false, value: false, newvalue: false, operator: false, filepath: true },
+    'FILE.LISTDIR':  { model: false, identifier: false,attribute: false, value: false, newvalue: false, operator: false, filepath: 'opt' },
+    'FILE.DELETE':   { model: false, identifier: false,attribute: false, value: false, newvalue: false, operator: false, filepath: true },
+    'TEMPLATE.CREATE': { model: true, identifier: 'opt', attribute: false, value: false, newvalue: false, operator: false, filepath: false, identifierLabel: 'Argument (optional)' },
+  };
+
+  function onCommandChange() {
+    const cmd = document.getElementById('b-command').value;
+    const schema = CMD_SCHEMAS[cmd] || {};
+
+    const show = (id, visible) => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = visible ? '' : 'none';
+    };
+
+    show('b-model-group', !!schema.model);
+    show('b-identifier-group', !!schema.identifier);
+    show('b-attribute-group', !!schema.attribute);
+    show('b-value-group', !!schema.value);
+    show('b-newvalue-group', !!schema.newvalue);
+    show('b-operator-group', !!schema.operator);
+    show('b-filepath-group', !!schema.filepath);
+
+    // Row visibility
+    const row2visible = schema.identifier || schema.attribute;
+    const row3visible = schema.value || schema.newvalue;
+    const row4visible = schema.operator || schema.filepath;
+    show('b-row2', row2visible);
+    show('b-row3', row3visible);
+    show('b-row4', row4visible);
+
+    // Labels
+    document.getElementById('b-identifier-label').innerHTML =
+      (schema.identifierLabel || 'Identifier') + ' <span class="' + (schema.identifier === 'opt' ? 'opt' : 'req') + '">' + (schema.identifier === 'opt' ? '(optional)' : '*') + '</span>';
+    document.getElementById('b-value-label').innerHTML =
+      (schema.valueLabel || 'Value') + ' <span class="' + (schema.value === 'opt' ? 'opt' : 'req') + '">' + (schema.value === 'opt' ? '(optional)' : '*') + '</span>';
+
+    buildCommand();
+  }
+
+  function buildCommand() {
+    const cmd = document.getElementById('b-command').value;
+    const schema = CMD_SCHEMAS[cmd] || {};
+    const s = ' ' + currentSep + ' ';
+
+    const model     = document.getElementById('b-model')?.value || '';
+    const ident     = document.getElementById('b-identifier')?.value.trim() || '';
+    const attr      = document.getElementById('b-attribute')?.value.trim() || '';
+    const val       = document.getElementById('b-value')?.value.trim() || '';
+    const newval    = document.getElementById('b-newvalue')?.value.trim() || '';
+    const operator  = document.getElementById('b-operator')?.value || '';
+    const filepath  = document.getElementById('b-filepath')?.value.trim() || '';
+
+    let parts = [cmd];
+
+    if (schema.model)       parts.push(model || '<MODEL>');
+    if (schema.identifier)  parts.push(ident || (schema.identifier === 'opt' ? null : '<IDENTIFIER>'));
+    if (schema.attribute)   parts.push(attr || (schema.attribute === 'opt' ? null : '<ATTRIBUTE>'));
+    if (schema.value)       parts.push(val || (schema.value === 'opt' ? null : '<VALUE>'));
+    if (schema.newvalue)    parts.push(newval || '<NEW_VALUE>');
+    if (schema.operator && operator) parts.push(operator);
+    if (schema.filepath)    parts.push(filepath || (schema.filepath === 'opt' ? null : '<FILE_PATH>'));
+
+    parts = parts.filter(p => p !== null);
+
+    const raw = parts.join(' ' + currentSep + ' ');
+
+    // colorize
+    const colored = parts.map((p, i) => {
+      if (i === 0) return `<span class="kw">${p}</span>`;
+      if (['BALL','REGIME','ECONOMY','SPECIAL'].includes(p)) return `<span class="kw" style="color:var(--purple)">${p}</span>`;
+      if (p.startsWith('<') && p.endsWith('>')) return `<span class="placeholder">${p}</span>`;
+      if (!isNaN(p)) return `<span class="num">${p}</span>`;
+      return `<span class="val">${p}</span>`;
+    }).join(`<span class="sep"> ${currentSep} </span>`);
+
+    document.getElementById('b-output').innerHTML = colored;
+  }
+
+  function copyBuilderOutput() {
+    const cmd = document.getElementById('b-command').value;
+    const schema = CMD_SCHEMAS[cmd] || {};
+    const model     = document.getElementById('b-model')?.value || '';
+    const ident     = document.getElementById('b-identifier')?.value.trim() || '';
+    const attr      = document.getElementById('b-attribute')?.value.trim() || '';
+    const val       = document.getElementById('b-value')?.value.trim() || '';
+    const newval    = document.getElementById('b-newvalue')?.value.trim() || '';
+    const operator  = document.getElementById('b-operator')?.value || '';
+    const filepath  = document.getElementById('b-filepath')?.value.trim() || '';
+
+    let parts = [cmd];
+    if (schema.model)       parts.push(model);
+    if (schema.identifier && ident)  parts.push(ident);
+    if (schema.attribute && attr)   parts.push(attr);
+    if (schema.value && val)       parts.push(val);
+    if (schema.newvalue && newval)    parts.push(newval);
+    if (schema.operator && operator) parts.push(operator);
+    if (schema.filepath && filepath)    parts.push(filepath);
+
+    const text = parts.join(' ' + currentSep + ' ');
+    navigator.clipboard.writeText(text);
+    showToast('Command copied!');
+  }
+
+  function resetBuilder() {
+    document.getElementById('b-command').value = 'UPDATE';
+    document.getElementById('b-identifier').value = '';
+    document.getElementById('b-attribute').value = '';
+    document.getElementById('b-value').value = '';
+    document.getElementById('b-newvalue').value = '';
+    document.getElementById('b-operator').value = '';
+    document.getElementById('b-filepath').value = '';
+    onCommandChange();
+  }
+
+  // Init
+  onCommandChange();
+</script>
+</body>
+</html>
