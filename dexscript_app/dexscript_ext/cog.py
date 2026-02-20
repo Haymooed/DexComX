@@ -71,9 +71,7 @@ class DexScript(commands.Cog):
             color=discord.Color.from_str("#03BAFC"),
         )
 
-        embed.set_thumbnail(
-            url="https://raw.githubusercontent.com/Dotsian/DexScript/refs/heads/dev/assets/DexScriptLogo.png"
-        )
+        
         embed.set_footer(text=f"DexComX {__version__}")
 
         await ctx.send(embed=embed)
