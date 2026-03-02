@@ -206,3 +206,5 @@ Lines wrapped with single backticks are cleaned automatically before parsing.
 ## Maintainer
 
 - Creator / Maintainer: **haymooed**
+
+[![Support me on Patreon](https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white)](https://www.patreon.com/your_username)
