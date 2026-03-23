@@ -2,7 +2,9 @@
 
 DexComX is a script-driven admin toolkit for BallsDex that lets owners create, update, filter, view, and remove model data quickly from Discord.
 
-**Originally created by [Cayla (DexScript)](https://github.com/Caylies/DexScript)** — DexComX builds upon the original DexScript foundation with modernized syntax and improved command parsing.
+> [!IMPORTANT]
+> **Originally created by [Cayla (DexScript)](https://github.com/Caylies/DexScript)** — DexComX builds upon the original DexScript foundation with modernized syntax and
+> improved command parsing.
 
 ## Quick Install
 
@@ -20,33 +22,20 @@ Then restart your BallsDex bot.
 
 ## Documentation
 
-Full command reference and interactive builder: **https://haymooed.github.io/DexComX/**
+> [!TIP]
+> Full command reference and interactive builder: **https://haymooed.github.io/DexComX/**
 
 ---
 
 ## What's New in DexComX
 
-- **Multiple separators**: Use `>`, `::`, or `=>` interchangeably
-- **Scoped mode**: `FILTER.UPDATE :: BALL :: REGIME :: Democracy :: Republic`
-- **Speed aliases**: `set`, `show`, `rm`, `ls`, `fields`
 - **Batch execution**: Paste entire scripts with `b.run` prefix
-- **Comment support**: Lines starting with `--` are ignored
 
 ## Command Format
 
 ### Classic Mode (legacy compatible)
 ```sql
 UPDATE > BALL > France > HEALTH > 100
-```
-
-### Scoped Mode
-```sql
-FILTER.UPDATE :: BALL :: REGIME :: Democracy :: Republic
-```
-
-### Slash-Style
-```sql
-/show => BALL => France => HEALTH
 ```
 
 ## Core Commands
@@ -100,12 +89,10 @@ ls      → listdir
 
 ```
 b.run
-```sql
 CREATE > BALL > Germany
 UPDATE > BALL > Germany > HEALTH > 100
 UPDATE > BALL > Germany > ATTACK > 90
 UPDATE > BALL > Germany > REGIME > Democracy
-```
 ```
 
 ## Available Models
