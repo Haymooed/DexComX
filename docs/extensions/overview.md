@@ -71,7 +71,7 @@ Pulls the latest version and reinstalls.
 ### Remove a Package
 
 ```
-/dexadmin extension remove ballsdex_merchant_package
+b.dexadmin extension remove ballsdex_merchant_package
 ```
 
 Removes from config and unloads the extension.
@@ -113,9 +113,9 @@ editable = false
 
 ## Best Practices
 
-1. **Always list first** - Run `/dexadmin extension list` before adding
+1. **Always list first** - Run `b.dexadmin extension list` before adding
 2. **Test in development** - Try new packages on a test bot first
-3. **Keep updated** - Regularly update packages with `/dexadmin extension update`
+3. **Keep updated** - Regularly update packages with `b.dexadmin extension update`
 4. **Remove unused** - Clean up packages you're not using
 
 ## Troubleshooting
@@ -126,11 +126,11 @@ Try restarting the bot. Some packages need a full restart to activate.
 
 ### "Package already installed"
 
-Use `/dexadmin extension list` to see what's installed, or use `update` instead of `add`.
+Use `b.dexadmin extension list` to see what's installed, or use `update` instead of `add`.
 
 ### Permission errors
 
-Ensure you're the bot owner. All `/dexadmin` commands are owner-only.
+Ensure you're the bot owner. All `b.dexadmin` commands are owner-only.
 
 ## See Also
 

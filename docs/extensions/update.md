@@ -5,7 +5,7 @@ Update an installed extension to the latest version.
 ## Syntax
 
 ```
-/dexadmin extension update <package_name>
+b.dexadmin extension update <package_name>
 ```
 
 ## Arguments
@@ -25,7 +25,7 @@ Update an installed extension to the latest version.
 ### Update a Package
 
 ```
-/dexadmin extension update ballsdex_merchant_package
+b.dexadmin extension update ballsdex_merchant_package
 ```
 
 ## Output
@@ -44,7 +44,7 @@ Restart the bot to apply updates.
 
 ```
 ❌ Package `unknown_package` not found.
-Use `/dexadmin extension list` to see installed packages.
+Use `b.dexadmin extension list` to see installed packages.
 ```
 
 ### Update Failed
@@ -58,7 +58,7 @@ Use `/dexadmin extension list` to see installed packages.
 
 - Always restart bot after updating
 - Updates pull from the same URL used during installation
-- Use `/dexadmin extension list` to find package names
+- Use `b.dexadmin extension list` to find package names
 
 ## Best Practices
 

@@ -28,19 +28,19 @@ Install a new BallsDex package from a git repository.
 ### Install from GitHub (HTTPS)
 
 ```
-/dexadmin extension add https://github.com/Haymooed/BallsDex-Merchant-Package.git
+b.dexadmin extension add https://github.com/Haymooed/BallsDex-Merchant-Package.git
 ```
 
 ### Install from GitHub (SSH)
 
 ```
-/dexadmin extension add git@github.com:User/Package.git
+b.dexadmin extension add git@github.com:User/Package.git
 ```
 
 ### Install from GitLab
 
 ```
-/dexadmin extension add https://gitlab.com/user/package.git
+b.dexadmin extension add https://gitlab.com/user/package.git
 ```
 
 ## Output
@@ -99,7 +99,7 @@ Package names are auto-generated from the URL:
 ### Check if Loaded
 
 ```
-/dexadmin extension list
+b.dexadmin extension list
 ```
 
 Should show your new package with status `✅ Enabled`.
@@ -130,7 +130,7 @@ Example: `https://github.com/User/Package.git`
 Installation took too long. The package may still be installing in the background.
 ```
 
-**Solution:** Wait a few minutes and check `/dexadmin extension list`.
+**Solution:** Wait a few minutes and check `b.dexadmin extension list`.
 
 ### Permission Errors
 

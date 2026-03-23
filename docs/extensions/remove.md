@@ -5,7 +5,7 @@ Remove an installed BallsDex package.
 ## Syntax
 
 ```
-/dexadmin extension remove <package_name>
+b.dexadmin extension remove <package_name>
 ```
 
 ## Arguments
@@ -25,7 +25,7 @@ Remove an installed BallsDex package.
 ### Remove a Package
 
 ```
-/dexadmin extension remove ballsdex_merchant_package
+b.dexadmin extension remove ballsdex_merchant_package
 ```
 
 ## Output
@@ -44,14 +44,14 @@ The package files remain installed. Restart the bot to fully unload.
 
 ```
 ❌ Package `unknown_package` not found in configuration.
-Use `/dexadmin extension list` to see installed packages.
+Use `b.dexadmin extension list` to see installed packages.
 ```
 
 ## Notes
 
 - Package files remain in Python environment
 - Restart bot to fully unload extension
-- Use `/dexadmin extension list` to find exact package names
+- Use `b.dexadmin extension list` to find exact package names
 
 ## See Also
 

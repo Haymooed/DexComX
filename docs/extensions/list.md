@@ -5,7 +5,7 @@ View all installed BallsDex extensions.
 ## Syntax
 
 ```
-/dexadmin extension list
+b.dexadmin extension list
 ```
 
 ## Examples
@@ -37,7 +37,7 @@ URL: https://github.com/Caylies/Art-BD-Package.git
 
 ```
 📦 No extensions installed.
-Use `/dexadmin extension add <url>` to install one.
+Use `b.dexadmin extension add <url>` to install one.
 ```
 
 ## Information Shown
