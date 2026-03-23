@@ -54,15 +54,15 @@ class DexScript(commands.Cog):
 
             await ctx.message.add_reaction("✅")
 
-    @commands.group(name="admin", invoke_without_command=True)
+    @commands.group(name="dexadmin", invoke_without_command=True)
     @commands.is_owner()
-    async def admin(self, ctx: commands.Context):
+    async def dexadmin(self, ctx: commands.Context):
         """
         DexComX admin commands.
         """
         await ctx.send_help(ctx.command)
 
-    @admin.command(name="extension")
+    @dexadmin.command(name="extension")
     @commands.is_owner()
     async def extension(self, ctx: commands.Context, action: str, url: str = None):
         """
@@ -77,10 +77,10 @@ class DexScript(commands.Cog):
         
         Examples
         --------
-        /admin extension add https://github.com/User/Package.git
-        /admin extension remove package_name
-        /admin extension list
-        /admin extension update package_name
+        /dexadmin extension add https://github.com/User/Package.git
+        /dexadmin extension remove package_name
+        /dexadmin extension list
+        /dexadmin extension update package_name
         """
         action = action.lower()
 
