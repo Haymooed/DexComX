@@ -1,210 +1,136 @@
 # DexComX
 
-DexComX is the rebranded successor to DexScript-V3, maintained by **haymooed**.
+DexComX is a script-driven admin toolkit for BallsDex that lets owners create, update, filter, view, and remove model data quickly from Discord.
 
-It is a script-driven admin toolkit for BallsDex that lets owners create, update, filter, view, and remove model data quickly from Discord.
+**Originally created by [Cayla (DexScript)](https://github.com/Caylies/DexScript)** — DexComX builds upon the original DexScript foundation with modernized syntax and improved command parsing.
 
-# Quick Install
-```
+## Quick Install
+
+Add to your `config/extra.toml`:
+
+```toml
 [[ballsdex.packages]]
 location = "git+https://github.com/Haymooed/DexComX.git"
 path = "dexscript_app"
 enabled = true
 editable = false
 ```
-# Lost?
 
-Return back to the website for help and more details
-https://haymooed.github.io/DexComX/
+Then restart your BallsDex bot.
 
-> [!TIP]
-> Suggested to return back to the website.
+## Documentation
 
+Full command reference and interactive builder: **https://haymooed.github.io/DexComX/**
 
 ---
 
-## What changed in DexComX
+## What's New in DexComX
 
-DexComX changes how commands are parsed and executed:
+- **Multiple separators**: Use `>`, `::`, or `=>` interchangeably
+- **Scoped mode**: `FILTER.UPDATE :: BALL :: REGIME :: Democracy :: Republic`
+- **Speed aliases**: `set`, `show`, `rm`, `ls`, `fields`
+- **Batch execution**: Paste entire scripts with `b.run` prefix
+- **Comment support**: Lines starting with `--` are ignored
 
-- You can now separate arguments with any of these separators:
-  - `>`
-  - `::`
-  - `=>`
-- You can run commands in **classic mode** or **scoped mode**.
-- You can use lightweight aliases (`set`, `show`, `rm`, `ls`, `fields`) for faster commanding.
+## Command Format
 
-## Command format
-
-### 1) Classic mode (legacy compatible)
-
+### Classic Mode (legacy compatible)
 ```sql
 UPDATE > BALL > France > HEALTH > 100
 ```
 
-### 2) Scoped mode (new)
-
+### Scoped Mode
 ```sql
 FILTER.UPDATE :: BALL :: REGIME :: Democracy :: Republic
 ```
 
-### 3) Slash-style action token (new)
-
+### Slash-Style
 ```sql
 /show => BALL => France => HEALTH
 ```
 
-## Full command reference
+## Core Commands
 
-> Notes:
-> - `MODEL` is typically one of: `BALL`, `REGIME`, `ECONOMY`, `SPECIAL`
-> - Optional arguments are marked with `(?)`
+| Command | Syntax | Description |
+|---------|--------|-------------|
+| **CREATE** | `CREATE > MODEL > IDENTIFIER` | Creates a model instance |
+| **DELETE** | `DELETE > MODEL > IDENTIFIER` | Deletes a model instance |
+| **UPDATE** | `UPDATE > MODEL > ID > ATTRIBUTE > VALUE` | Updates one attribute |
+| **VIEW** | `VIEW > MODEL > ID > ATTRIBUTE(?)` | Shows field(s) |
+| **ATTRIBUTES** | `ATTRIBUTES > MODEL > FILTER(?)` | Lists editable fields |
 
----
+### Filter Commands (Bulk Operations)
 
-### Global commands
+| Command | Syntax |
+|---------|--------|
+| **FILTER.UPDATE** | `FILTER > UPDATE > MODEL > ATTR > OLD > NEW > OP(?)` |
+| **FILTER.DELETE** | `FILTER > DELETE > MODEL > ATTR > VALUE > OP(?)` |
+| **FILTER.VIEW** | `FILTER > VIEW > MODEL > ATTR > VALUE > OP(?)` |
 
-#### CREATE
-- `CREATE > MODEL > IDENTIFIER`
-- Creates a model instance.
+### File System Commands
 
-#### DELETE
-- `DELETE > MODEL > IDENTIFIER`
-- Deletes a model instance by identifier.
+| Command | Syntax |
+|---------|--------|
+| **FILE.READ** | `FILE > READ > PATH` |
+| **FILE.WRITE** | `FILE > WRITE > PATH` |
+| **FILE.CLEAR** | `FILE > CLEAR > PATH` |
+| **FILE.LISTDIR** | `FILE > LISTDIR > PATH(?)` |
+| **FILE.DELETE** | `FILE > DELETE > PATH` |
 
-#### UPDATE
-- `UPDATE > MODEL > IDENTIFIER > ATTRIBUTE > VALUE(?)`
-- Updates one attribute on one model instance.
-- If `VALUE` is omitted and the target field is an image-like field, attached files are used.
+### Eval Presets
 
-#### VIEW
-- `VIEW > MODEL > IDENTIFIER > ATTRIBUTE(?)`
-- Shows one field, or all visible fields when `ATTRIBUTE` is omitted.
-
-#### ATTRIBUTES
-- `ATTRIBUTES > MODEL > FILTER(?)`
-- Lists editable fields.
-- Filters:
-  - `NULL`
-  - `VALID`
-
----
-
-### Filter commands
-
-#### FILTER.UPDATE
-- `FILTER > UPDATE > MODEL > ATTRIBUTE > OLD_VALUE > NEW_VALUE > OPERATOR(?)`
-- Bulk-updates matching rows.
-
-#### FILTER.DELETE
-- `FILTER > DELETE > MODEL > ATTRIBUTE > VALUE > OPERATOR(?)`
-- Bulk-deletes matching rows.
-
-#### FILTER.VIEW
-- `FILTER > VIEW > MODEL > ATTRIBUTE > VALUE > OPERATOR(?)`
-- Lists matching row identifiers.
-
----
-
-### Eval preset commands
-
-#### EVAL.SAVE
-- `EVAL > SAVE > NAME`
-- Prompts for eval content and saves it as a preset.
-
-#### EVAL.REMOVE
-- `EVAL > REMOVE > NAME`
-- Deletes a preset.
-
-#### EVAL.LIST
-- `EVAL > LIST`
-- Lists presets.
-
-#### EVAL.RUN
-- `EVAL > RUN > NAME`
-- Executes a saved preset.
-
----
-
-### File system commands
-
-#### FILE.READ
-- `FILE > READ > FILE_PATH`
-- Sends a file.
-
-#### FILE.WRITE
-- `FILE > WRITE > FILE_PATH`
-- Writes from the attached file contents to the path.
-
-#### FILE.CLEAR
-- `FILE > CLEAR > FILE_PATH`
-- Empties a file.
-
-#### FILE.LISTDIR
-- `FILE > LISTDIR > FILE_PATH(?)`
-- Lists directory contents.
-
-#### FILE.DELETE
-- `FILE > DELETE > FILE_PATH`
-- Deletes a file or directory.
-
----
-
-### Template helper commands
-
-#### TEMPLATE.CREATE
-- `TEMPLATE > CREATE > MODEL > ARGUMENT(?)`
-- Sends starter command templates for model setup.
+| Command | Syntax |
+|---------|--------|
+| **EVAL.SAVE** | `EVAL > SAVE > NAME` |
+| **EVAL.REMOVE** | `EVAL > REMOVE > NAME` |
+| **EVAL.LIST** | `EVAL > LIST` |
+| **EVAL.RUN** | `EVAL > RUN > NAME` |
 
 ## Aliases
 
-DexComX supports built-in aliases for faster scripting:
-
-- `set` → `update`
-- `show` → `view`
-- `fields` → `attributes`
-- `rm` / `del` → `delete`
-- `ls` → `listdir`
-
-Examples:
-
-```sql
-set > BALL > France > HEALTH > 105
-show :: BALL :: France
-FILE.ls => ./
+```
+set     → update
+show    → view
+fields  → attributes
+rm/del  → delete
+ls      → listdir
 ```
 
-## Comment lines
+## Batch Execution
 
-Any line starting with `--` is treated as a comment and ignored.
-
-```sql
--- this line will be ignored
-CREATE > BALL > NewCountry
 ```
-
-## Ownership and execution
-
-- Use the Discord owner-only command:
-  - `run <script>`
-- Paste scripts in code blocks or plain text; markdown wrappers are stripped automatically.
-
-### Sending one big message
-
-DexComX now accepts batch pastes where each line starts with `o.run` (or `run`), so you can send a full setup script in one message:
-
 b.run
 ```sql
-CREATE > BALL > A
-UPDATE > BALL > A > REGIME > Communist
-UPDATE > BALL > A > HEALTH > 100
-UPDATE > BALL > A > ATTACK > 90
+CREATE > BALL > Germany
+UPDATE > BALL > Germany > HEALTH > 100
+UPDATE > BALL > Germany > ATTACK > 90
+UPDATE > BALL > Germany > REGIME > Democracy
 ```
 
-Lines wrapped with single backticks are cleaned automatically before parsing.
 
-## Maintainer
+## Available Models
+```
+- `BALL`
+- `REGIME`
+- `ECONOMY`
+- `SPECIAL`
+```
+## Usage
 
-- Creator / Maintainer: **haymooed**
+All commands are **owner-only**. Execute with:
+```
+run <script>
+```
+or
+```
+o.run <script>
 
-[![Support me on Patreon](https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white)](https://www.patreon.com/your_username)
+```
+## Credits
+
+- **Original Creator**: [Cayla](https://github.com/Caylies/DexScript) - Created DexScript
+- **Current Maintainer**: [haymooed](https://github.com/Haymooed) - DexComX improvements
+
+## License
+
+This project builds upon the original DexScript. Please respect the original creator's work.
