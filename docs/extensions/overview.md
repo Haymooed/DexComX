@@ -1,91 +1,140 @@
-# Syntax Overview
+# Extension Manager
 
-DexComX uses a simple, command-based syntax with the `>` separator.
+DexComX includes a built-in extension manager that lets you install, update, and remove BallsDex packages directly from Discord.
 
-## Basic Format
+## What is the Extension Manager?
 
-```
-COMMAND > ARGUMENT1 > ARGUMENT2 > ARGUMENT3
-```
+The extension manager allows you to:
 
-## Scoped Mode
+- Install packages from GitHub repositories
+- Manage installed packages without editing config files
+- Update packages to their latest versions
+- Remove packages cleanly
 
-Use dot-notation to scope to a command class:
+## Why Use It?
 
-```sql
-FILTER.UPDATE > BALL > REGIME > Democracy > Republic
-FILE.READ > ./config.json
-```
-
-## Slash-Style
-
-You can prefix commands with `/` for readability:
-
-```sql
-/show > BALL > France > HEALTH
-/rm > BALL > OldBall
+**Before:**
+```toml
+# Manually edit config/extra.toml
+[[ballsdex.packages]]
+location = "git+https://github.com/User/Package.git"
+path = "package_name"
+enabled = true
+editable = false
 ```
 
-## Command Structure
-
-### Global Commands
-
+**Now:**
 ```
-UPDATE > BALL > France > HEALTH > 100
-VIEW > BALL > France
-DELETE > BALL > OldBall
+/admin extension add https://github.com/User/Package.git
 ```
 
-### Scoped Commands
+## Available Commands
+
+All extension manager commands are under the `/admin extension` group:
+
+- **[add](add.md)** - Install a new extension
+- **[remove](remove.md)** - Remove an installed extension
+- **[list](list.md)** - Show all installed extensions
+- **[update](update.md)** - Update an extension to latest version
+
+## Quick Example
+
+### Install a Package
 
 ```
-FILTER.UPDATE > BALL > REGIME > Democracy > Republic
-FILE.READ > ./settings.json
-EVAL.RUN > my_preset
+/admin extension add https://github.com/Haymooed/BallsDex-Merchant-Package.git
 ```
 
-## Models
+DexComX will:
 
-DexComX works with these BallsDex models:
+1. Download the package via pip
+2. Add it to `config/extra.toml`
+3. Attempt to load the extension
+4. Show success or error message
 
-- **BALL** - Country balls/collectibles
-- **REGIME** - Political regimes
-- **ECONOMY** - Economic systems
-- **SPECIAL** - Special items
-
-## Optional Arguments
-
-Some commands have optional arguments marked with `(?)`:
+### List Installed Packages
 
 ```
-VIEW > BALL > France > HEALTH(?)
-ATTRIBUTES > BALL > FILTER(?)
+/admin extension list
 ```
 
-If omitted, the command uses default behavior.
+Shows all packages with their URLs and status.
 
-## Examples
+### Update a Package
 
-### Simple Update
-
-```sql
-UPDATE > BALL > France > HEALTH > 100
+```
+/admin extension update ballsdex_merchant_package
 ```
 
-### Scoped Filter
+Pulls the latest version and reinstalls.
 
-```sql
-FILTER.VIEW > BALL > REGIME > Democracy
+### Remove a Package
+
+```
+/admin extension remove ballsdex_merchant_package
 ```
 
-### File Operation
+Removes from config and unloads the extension.
 
-```sql
-FILE.READ > ./config.json
+## How It Works
+
+### Installation Flow
+
+1. User runs `/admin extension add <url>`
+2. DexComX validates the git URL
+3. Package is downloaded via `pip install git+<url>`
+4. Entry is added to `config/extra.toml`
+5. Extension is loaded (if possible)
+6. Success/failure message is shown
+
+### Configuration
+
+All changes are saved to `config/extra.toml` in the standard BallsDex format:
+
+```toml
+[[ballsdex.packages]]
+location = "git+https://github.com/User/Package.git"
+path = "package_name"
+enabled = true
+editable = false
 ```
 
-## Next Steps
+## Requirements
 
-- [Aliases](aliases.md) - Speed up commands with shortcuts
-- [Comments](comments.md) - Document your scripts
-- [Batch Execution](batch.md) - Run multiple commands at once
+- Bot owner permissions (all `/admin` commands are owner-only)
+- Git-based package URLs (GitHub, GitLab, etc.)
+- Package must follow BallsDex package structure
+
+## Limitations
+
+- Some packages may require a bot restart to fully activate
+- Only works with git URLs (not local paths)
+- Package names are auto-generated from URLs
+
+## Best Practices
+
+1. **Always list first** - Run `/admin extension list` before adding
+2. **Test in development** - Try new packages on a test bot first
+3. **Keep updated** - Regularly update packages with `/admin extension update`
+4. **Remove unused** - Clean up packages you're not using
+
+## Troubleshooting
+
+### Package won't load
+
+Try restarting the bot. Some packages need a full restart to activate.
+
+### "Package already installed"
+
+Use `/admin extension list` to see what's installed, or use `update` instead of `add`.
+
+### Permission errors
+
+Ensure you're the bot owner. All `/admin` commands are owner-only.
+
+## See Also
+
+- [Add Extension](add.md) - Install packages
+- [Remove Extension](remove.md) - Uninstall packages
+- [List Extensions](list.md) - View installed packages
+- [Update Extension](update.md) - Update to latest versions

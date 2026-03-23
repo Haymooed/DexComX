@@ -1,101 +1,87 @@
-# Batch Execution
+# DexComX
 
-Execute multiple DexComX commands in a single message using batch mode.
+DexComX is a script-driven admin toolkit for BallsDex that lets owners create, update, filter, view, and remove model data quickly from Discord.
 
-## Syntax
+!!! info "Credits"
+    **Originally created by [Cayla (DexScript)](https://github.com/Caylies/DexScript)** — DexComX builds upon the original DexScript foundation with improved command parsing, speed aliases, and extension management.
+
+## Installation
+
+Add to your `config/extra.toml`:
+
+```toml
+[[ballsdex.packages]]
+location = "git+https://github.com/Haymooed/DexComX.git"
+path = "dexscript_app"
+enabled = true
+editable = false
+```
+
+Then restart your BallsDex bot.
+
+## Features
+
+- **Speed Aliases**: `set`, `show`, `rm`, `ls`, `fields` — faster commands
+- **Scoped Commands**: `FILTER.UPDATE > BALL > REGIME > Democracy > Republic`
+- **Bulk Filter Operations**: Mass update, delete, or view rows
+- **Eval Presets**: Save and run Python eval scripts
+- **File System Tools**: Read, write, clear, list, and delete files
+- **Extension Manager**: Install BallsDex packages directly from Discord
+- **Batch Execution**: Paste entire scripts with `b.run` prefix
+- **Comment Support**: Lines starting with `--` are ignored
+
+## Quick Start
+
+All commands are **owner-only**. Execute scripts with:
 
 ```
-b.run
-COMMAND1 > ARG1 > ARG2
-COMMAND2 > ARG1 > ARG2
-COMMAND3 > ARG1 > ARG2
+run <script>
 ```
 
-## How It Works
+or
 
-Prefix your multi-line script with `b.run` (or `o.run`) and DexComX will execute each line sequentially.
+```
+o.run <script>
+```
 
-## Examples
-
-### Basic Batch Script
+### Example: Create a Ball
 
 ```sql
-b.run
 CREATE > BALL > Germany
 UPDATE > BALL > Germany > HEALTH > 100
 UPDATE > BALL > Germany > ATTACK > 90
 UPDATE > BALL > Germany > REGIME > Democracy
 ```
 
-### With Comments
+### Example: Bulk Operations
 
 ```sql
-b.run
--- Create new balls
-CREATE > BALL > France
-CREATE > BALL > Germany
-
--- Configure France
-UPDATE > BALL > France > HEALTH > 100
-UPDATE > BALL > France > ATTACK > 85
-
--- Configure Germany
-UPDATE > BALL > Germany > HEALTH > 105
-UPDATE > BALL > Germany > ATTACK > 90
-```
-
-### Mixed Commands
-
-```sql
-b.run
--- Filter operations
+-- Change all Democracy regimes to Republic
 FILTER.UPDATE > BALL > REGIME > Democracy > Republic
-FILTER.DELETE > BALL > REGIME > Communist
 
--- Create new ball
-CREATE > BALL > NewCountry
-
--- File operations
-FILE.READ > ./config.json
+-- View all balls with health > 100
+FILTER.VIEW > BALL > HEALTH > 100 > gt
 ```
 
-## Error Handling
+### Example: Using Aliases
 
-If any command in the batch fails:
-- DexComX continues executing remaining commands
-- All errors are collected and shown at the end
-- Successful commands show ✅ reaction
+```sql
+-- set is alias for UPDATE
+set > BALL > France > HEALTH > 105
 
-## Benefits
-
-- **Paste entire scripts** - Copy/paste from text files
-- **Atomic operations** - Run related commands together
-- **Script sharing** - Share full workflows with others
-- **Version control** - Save scripts in git
-
-## Alternative: Single Command Mode
-
-Without `b.run`, send one command per message:
-
-```
-run CREATE > BALL > Germany
+-- show is alias for VIEW
+show > BALL > France
 ```
 
-```
-run UPDATE > BALL > Germany > HEALTH > 100
-```
+## Available Models
 
-Batch mode is faster for multiple commands.
+- `BALL`
+- `REGIME`
+- `ECONOMY`
+- `SPECIAL`
 
-## Tips
+## Next Steps
 
-1. **Test individual commands first** - Verify syntax before batching
-2. **Use comments liberally** - Document what each section does
-3. **Save scripts as files** - Keep reusable scripts in your project
-4. **Check for errors** - Review all error messages at the end
-
-## See Also
-
-- [Comments](comments.md) - Document your batch scripts
-- [Syntax Overview](overview.md) - Command structure
-- [Aliases](aliases.md) - Speed up batch scripts
+- Learn about [Syntax](syntax/overview.md)
+- Explore [Commands](commands/create.md)
+- Manage [Extensions](extensions/overview.md)
