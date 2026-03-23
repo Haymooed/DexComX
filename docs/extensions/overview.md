@@ -1,88 +1,91 @@
-# CREATE
+# Syntax Overview
 
-Creates a new model instance with default values for required fields.
+DexComX uses a simple, command-based syntax with the `>` separator.
 
-## Syntax
+## Basic Format
 
 ```
-CREATE > MODEL > IDENTIFIER
+COMMAND > ARGUMENT1 > ARGUMENT2 > ARGUMENT3
 ```
 
-## Arguments
+## Scoped Mode
 
-| Argument | Type | Description |
-|----------|------|-------------|
-| `MODEL` | Required | Model class: `BALL`, `REGIME`, `ECONOMY`, `SPECIAL` |
-| `IDENTIFIER` | Required | Name/identifier for the new instance |
+Use dot-notation to scope to a command class:
 
-## Behavior
+```sql
+FILTER.UPDATE > BALL > REGIME > Democracy > Republic
+FILE.READ > ./config.json
+```
 
-- Creates a new instance of the specified model
-- Auto-populates required fields with default values
-- Returns confirmation message
+## Slash-Style
+
+You can prefix commands with `/` for readability:
+
+```sql
+/show > BALL > France > HEALTH
+/rm > BALL > OldBall
+```
+
+## Command Structure
+
+### Global Commands
+
+```
+UPDATE > BALL > France > HEALTH > 100
+VIEW > BALL > France
+DELETE > BALL > OldBall
+```
+
+### Scoped Commands
+
+```
+FILTER.UPDATE > BALL > REGIME > Democracy > Republic
+FILE.READ > ./settings.json
+EVAL.RUN > my_preset
+```
+
+## Models
+
+DexComX works with these BallsDex models:
+
+- **BALL** - Country balls/collectibles
+- **REGIME** - Political regimes
+- **ECONOMY** - Economic systems
+- **SPECIAL** - Special items
+
+## Optional Arguments
+
+Some commands have optional arguments marked with `(?)`:
+
+```
+VIEW > BALL > France > HEALTH(?)
+ATTRIBUTES > BALL > FILTER(?)
+```
+
+If omitted, the command uses default behavior.
 
 ## Examples
 
-### Create a Ball
+### Simple Update
 
 ```sql
-CREATE > BALL > Germany
+UPDATE > BALL > France > HEALTH > 100
 ```
 
-**Output:**
-```
-Created `Germany` ball
-```
-
-### Create a Regime
+### Scoped Filter
 
 ```sql
-CREATE > REGIME > Republic
+FILTER.VIEW > BALL > REGIME > Democracy
 ```
 
-### Create Multiple Instances
+### File Operation
 
 ```sql
-CREATE > BALL > Spain
-CREATE > BALL > Italy
-CREATE > BALL > Portugal
+FILE.READ > ./config.json
 ```
 
-## After Creation
+## Next Steps
 
-After creating an instance, you'll typically want to update its attributes:
-
-```sql
-CREATE > BALL > NewCountry
-UPDATE > BALL > NewCountry > HEALTH > 100
-UPDATE > BALL > NewCountry > ATTACK > 90
-UPDATE > BALL > NewCountry > REGIME > Democracy
-UPDATE > BALL > NewCountry > RARITY > 1.0
-```
-
-## Default Values
-
-DexComX automatically sets safe defaults for required fields:
-
-- **Numeric fields**: `1` (integers), `1.0` (floats)
-- **Text fields**: `"placeholder"`
-- **Boolean fields**: `False`
-- **Foreign keys**: First available instance from related model
-- **JSON fields**: `{}`
-
-## Template Helper
-
-For complex models like BALL, use the template helper:
-
-```sql
-TEMPLATE > CREATE > BALL > Germany
-```
-
-This generates a full setup template with all common fields.
-
-## See Also
-
-- [UPDATE](update.md) - Modify instance attributes
-- [DELETE](delete.md) - Remove instances
-- [VIEW](view.md) - Inspect instance data
-- [TEMPLATE.CREATE](template-create.md) - Generate setup templates
+- [Aliases](aliases.md) - Speed up commands with shortcuts
+- [Comments](comments.md) - Document your scripts
+- [Batch Execution](batch.md) - Run multiple commands at once
