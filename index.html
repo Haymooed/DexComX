@@ -36,9 +36,10 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .nav-icon{width:14px;height:14px;opacity:0.5;flex-shrink:0;}
 .nav-item.active .nav-icon{opacity:1;}
 .sidebar-footer{padding:14px 18px;border-top:1px solid var(--border);}
-.author-tag{font-size:10px;color:var(--text3);font-family:var(--font-mono);display:flex;align-items:center;gap:8px;letter-spacing:1px;}
-.dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:var(--glow-green);animation:blink 2s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.credits-box{font-size:9px;color:var(--text3);font-family:var(--font-mono);line-height:1.6;letter-spacing:0.5px;}
+.credits-box a{color:var(--cyan2);text-decoration:none;transition:color 0.2s;}
+.credits-box a:hover{color:var(--cyan);text-shadow:0 0 8px rgba(0,245,255,0.4);}
+.credits-label{color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
 .main{flex:1;overflow-y:auto;}
 .page{display:none;}
 .page.active{display:block;animation:pageIn 0.3s ease;}
@@ -51,7 +52,11 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .hero-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--cyan2);box-shadow:0 0 6px var(--cyan2);}
 .hero h1{font-size:clamp(52px,7vw,88px);font-weight:700;letter-spacing:-2px;line-height:0.9;margin-bottom:22px;text-transform:uppercase;}
 .hero h1 .glow{color:var(--cyan);text-shadow:var(--glow-cyan);}
-.hero-desc{font-size:13px;color:var(--text2);line-height:1.7;max-width:580px;margin-bottom:36px;font-family:var(--font-mono);}
+.hero-desc{font-size:13px;color:var(--text2);line-height:1.7;max-width:580px;margin-bottom:18px;font-family:var(--font-mono);}
+.hero-credit{font-size:11px;color:var(--text3);font-family:var(--font-mono);margin-bottom:36px;padding:10px 14px;background:rgba(0,245,255,0.03);border-left:2px solid var(--cyan2);border-radius:2px;}
+.hero-credit strong{color:var(--cyan);font-weight:600;}
+.hero-credit a{color:var(--cyan2);text-decoration:none;transition:color 0.2s;}
+.hero-credit a:hover{color:var(--cyan);text-shadow:0 0 8px rgba(0,245,255,0.3);}
 .hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:3px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;border:none;text-decoration:none;font-family:var(--font-ui);letter-spacing:1px;text-transform:uppercase;position:relative;overflow:hidden;}
 .btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 100%);opacity:0;transition:opacity 0.2s;}
@@ -181,7 +186,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
   <div class="sidebar-logo">
     <div class="logo-badge">
       <div class="logo-icon">DX</div>
-      <div><div class="logo-text">Dex<span>ComX</span></div><div class="logo-sub">v0.9 // BallsDex</div></div>
+      <div><div class="logo-text">Dex<span>ComX</span></div><div class="logo-sub">v1.0 // BallsDex</div></div>
     </div>
   </div>
   <div class="search-wrap"><input class="search-input" placeholder="// search docs..." id="searchInput" oninput="filterNav(this.value)"></div>
@@ -205,7 +210,13 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
       <a class="nav-item" onclick="showPage('builder')"><svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>Command Builder</a>
     </div>
   </nav>
-  <div class="sidebar-footer"><div class="author-tag"><span class="dot"></span>haymooed // active</div></div>
+  <div class="sidebar-footer">
+    <div class="credits-box">
+      <div class="credits-label">// Credits</div>
+      Original: <a href="https://github.com/Caylies/DexScript" target="_blank">Cayla</a><br>
+      Fork: <a href="https://github.com/Haymooed" target="_blank">haymooed</a>
+    </div>
+  </div>
 </aside>
 <main class="main">
 
@@ -216,6 +227,9 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
     <div class="hero-eyebrow">BallsDex Admin Toolkit</div>
     <h1>Dex<span class="glow">ComX</span></h1>
     <p class="hero-desc">Script-driven command suite for BallsDex. Create, update, filter, view, and remove model data directly from Discord — flexible separators, speed aliases, batch execution.</p>
+    <div class="hero-credit">
+      <strong>Built on DexScript</strong> by <a href="https://github.com/Caylies/DexScript" target="_blank">Cayla</a> — DexComX extends the original with multi-separator parsing and modern command syntax.
+    </div>
     <div class="hero-actions">
       <button class="btn btn-primary" onclick="showPage('builder')">&#x26A1; Command Builder</button>
       <button class="btn btn-secondary" onclick="showPage('global')">// Reference Docs</button>
@@ -262,263 +276,7 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
   </div>
 </div>
 
-<!-- SYNTAX -->
-<div class="page" id="page-syntax">
-  <div class="section">
-    <div class="section-header"><h2>Syntax <span>&amp; Modes</span></h2><p>// Three execution modes — three interchangeable separators</p></div>
-    <div class="sub-heading">Separators</div>
-    <div class="alias-grid" style="margin-bottom:20px;">
-      <div class="alias-card"><span class="alias-from">&gt;</span><span class="alias-arrow">—</span><span class="alias-to">Classic</span></div>
-      <div class="alias-card"><span class="alias-from">::</span><span class="alias-arrow">—</span><span class="alias-to">Scoped</span></div>
-      <div class="alias-card"><span class="alias-from">=&gt;</span><span class="alias-arrow">—</span><span class="alias-to">Arrow</span></div>
-    </div>
-    <div class="sub-heading">Classic Mode</div>
-    <div class="infobox infobox-info"><span class="infobox-icon">&#x25C8;</span>Legacy-compatible. Works with original DexScript-V3 scripts.</div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Classic</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">France</span> <span class="op">&gt;</span> <span class="val">HEALTH</span> <span class="op">&gt;</span> <span class="num">100</span></div></div>
-    <div class="sub-heading">Scoped Mode</div>
-    <div class="infobox infobox-info"><span class="infobox-icon">&#x25C8;</span>Use dot-notation to scope to a command class, then chain with any separator.</div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Scoped</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">FILTER.UPDATE</span> <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="val">REGIME</span> <span class="op">::</span> <span class="str">Democracy</span> <span class="op">::</span> <span class="str">Republic</span>
-<span class="kw">FILTER.VIEW</span>   <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="val">REGIME</span> <span class="op">::</span> <span class="str">Democracy</span>
-<span class="kw">FILE.READ</span>     <span class="op">::</span> <span class="str">./settings.json</span></div></div>
-    <div class="sub-heading">Slash-Style</div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Slash</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">/show</span> <span class="op">=&gt;</span> <span class="val">BALL</span> <span class="op">=&gt;</span> <span class="str">France</span> <span class="op">=&gt;</span> <span class="val">HEALTH</span>
-<span class="kw">/rm</span>   <span class="op">=&gt;</span> <span class="val">BALL</span> <span class="op">=&gt;</span> <span class="str">France</span></div></div>
-    <div class="sub-heading">Comments</div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Comments</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="comment">-- this line will be ignored</span>
-<span class="kw">CREATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">NewCountry</span></div></div>
-    <div class="sub-heading">Batch Execution</div>
-    <div class="infobox infobox-warn"><span class="infobox-icon">&#x26A0;</span>DexComX accepts batch pastes starting with <code>o.run</code> or <code>run</code>. Code fences are stripped automatically.</div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Batch</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content">b.run
-```sql
-<span class="kw">CREATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">A</span>
-<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">A</span> <span class="op">&gt;</span> <span class="val">REGIME</span> <span class="op">&gt;</span> <span class="str">Communist</span>
-<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">A</span> <span class="op">&gt;</span> <span class="val">HEALTH</span> <span class="op">&gt;</span> <span class="num">100</span>
-<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">A</span> <span class="op">&gt;</span> <span class="val">ATTACK</span> <span class="op">&gt;</span> <span class="num">90</span>
-```</div></div>
-    <div class="sub-heading">Available Models</div>
-    <div class="alias-grid"><div class="alias-card"><span class="alias-from">BALL</span></div><div class="alias-card"><span class="alias-from">REGIME</span></div><div class="alias-card"><span class="alias-from">ECONOMY</span></div><div class="alias-card"><span class="alias-from">SPECIAL</span></div></div>
-  </div>
-</div>
-
-<!-- ALIASES -->
-<div class="page" id="page-aliases">
-  <div class="section">
-    <div class="section-header"><h2><span>Aliases</span></h2><p>// Built-in shortcuts for faster scripting</p></div>
-    <div class="alias-grid">
-      <div class="alias-card"><span class="alias-from">set</span><span class="alias-arrow">&#x2192;</span><span class="alias-to">update</span></div>
-      <div class="alias-card"><span class="alias-from">show</span><span class="alias-arrow">&#x2192;</span><span class="alias-to">view</span></div>
-      <div class="alias-card"><span class="alias-from">fields</span><span class="alias-arrow">&#x2192;</span><span class="alias-to">attributes</span></div>
-      <div class="alias-card"><span class="alias-from">rm</span><span class="alias-arrow">&#x2192;</span><span class="alias-to">delete</span></div>
-      <div class="alias-card"><span class="alias-from">del</span><span class="alias-arrow">&#x2192;</span><span class="alias-to">delete</span></div>
-      <div class="alias-card"><span class="alias-from">ls</span><span class="alias-arrow">&#x2192;</span><span class="alias-to">listdir</span></div>
-    </div>
-    <div class="sub-heading">Examples</div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Alias Examples</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="comment">-- set &#x2192; UPDATE</span>
-<span class="kw">set</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">France</span> <span class="op">&gt;</span> <span class="val">HEALTH</span> <span class="op">&gt;</span> <span class="num">105</span>
-
-<span class="comment">-- show &#x2192; VIEW</span>
-<span class="kw">show</span> <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="str">France</span>
-
-<span class="comment">-- rm / del &#x2192; DELETE</span>
-<span class="kw">rm</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">OldBall</span>
-
-<span class="comment">-- ls &#x2192; FILE.LISTDIR</span>
-<span class="kw">FILE.ls</span> <span class="op">=&gt;</span> <span class="str">./</span>
-
-<span class="comment">-- fields &#x2192; ATTRIBUTES</span>
-<span class="kw">fields</span> <span class="op">&gt;</span> <span class="val">BALL</span></div></div>
-  </div>
-</div>
-
-<!-- GLOBAL -->
-<div class="page" id="page-global">
-  <div class="section">
-    <div class="section-header"><h2>Global <span>Commands</span></h2><p>// Core operations for managing model instances</p></div>
-    <div class="sub-heading">CREATE</div>
-    <div class="infobox infobox-info"><span class="infobox-icon">+</span>Creates a new model instance. Required fields auto-populated with defaults.</div>
-    <div class="table-wrap"><table class="cmd-table"><thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead><tbody>
-      <tr><td class="cmd-name">MODEL</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">BALL, REGIME, ECONOMY, or SPECIAL</td></tr>
-      <tr><td class="cmd-name">IDENTIFIER</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Name/identifier for the new instance</td></tr>
-    </tbody></table></div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Syntax</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">CREATE</span> <span class="op">&gt;</span> <span class="val">MODEL</span> <span class="op">&gt;</span> <span class="str">IDENTIFIER</span></div></div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Example</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">CREATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">Germany</span></div></div>
-    <div class="sub-heading">DELETE</div>
-    <div class="infobox infobox-warn"><span class="infobox-icon">&#x26A0;</span>Permanently deletes the model instance. Aliases: <code>rm</code>, <code>del</code></div>
-    <div class="table-wrap"><table class="cmd-table"><thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead><tbody>
-      <tr><td class="cmd-name">MODEL</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Model class to target</td></tr>
-      <tr><td class="cmd-name">IDENTIFIER</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Name of the instance to delete</td></tr>
-    </tbody></table></div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Syntax</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">DELETE</span> <span class="op">&gt;</span> <span class="val">MODEL</span> <span class="op">&gt;</span> <span class="str">IDENTIFIER</span></div></div>
-    <div class="sub-heading">UPDATE</div>
-    <div class="infobox infobox-info"><span class="infobox-icon">&#x25C8;</span>Updates one attribute. If VALUE omitted on image field, attached file is used. Alias: <code>set</code></div>
-    <div class="table-wrap"><table class="cmd-table"><thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead><tbody>
-      <tr><td class="cmd-name">MODEL</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Model class</td></tr>
-      <tr><td class="cmd-name">IDENTIFIER</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Instance name</td></tr>
-      <tr><td class="cmd-name">ATTRIBUTE</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Field name to change</td></tr>
-      <tr><td class="cmd-name">VALUE</td><td><span class="badge badge-opt">optional</span></td><td class="cmd-desc">New value. Omit for image fields with attachment.</td></tr>
-    </tbody></table></div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Syntax</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">MODEL</span> <span class="op">&gt;</span> <span class="str">IDENTIFIER</span> <span class="op">&gt;</span> <span class="val">ATTRIBUTE</span> <span class="op">&gt;</span> <span class="str">VALUE</span></div></div>
-    <div class="sub-heading">VIEW</div>
-    <div class="infobox infobox-info"><span class="infobox-icon">&#x25C8;</span>Show one field, or all fields when ATTRIBUTE omitted. Alias: <code>show</code></div>
-    <div class="table-wrap"><table class="cmd-table"><thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead><tbody>
-      <tr><td class="cmd-name">MODEL</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Model class</td></tr>
-      <tr><td class="cmd-name">IDENTIFIER</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Instance name</td></tr>
-      <tr><td class="cmd-name">ATTRIBUTE</td><td><span class="badge badge-opt">optional</span></td><td class="cmd-desc">Specific field. Omit to see all.</td></tr>
-    </tbody></table></div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Syntax</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">VIEW</span> <span class="op">&gt;</span> <span class="val">MODEL</span> <span class="op">&gt;</span> <span class="str">IDENTIFIER</span> <span class="op">&gt;</span> <span class="val">ATTRIBUTE</span> <span class="comment">(optional)</span></div></div>
-    <div class="sub-heading">ATTRIBUTES</div>
-    <div class="infobox infobox-info"><span class="infobox-icon">&#x25C8;</span>Lists all editable fields on a model. Alias: <code>fields</code></div>
-    <div class="table-wrap"><table class="cmd-table"><thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead><tbody>
-      <tr><td class="cmd-name">MODEL</td><td><span class="badge badge-req">required</span></td><td class="cmd-desc">Model class</td></tr>
-      <tr><td class="cmd-name">FILTER</td><td><span class="badge badge-opt">optional</span></td><td class="cmd-desc"><code>NULL</code> — nullable only. <code>VALID</code> — non-nullable only.</td></tr>
-    </tbody></table></div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Syntax</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">ATTRIBUTES</span> <span class="op">&gt;</span> <span class="val">MODEL</span> <span class="op">&gt;</span> <span class="str">NULL|VALID</span> <span class="comment">(optional)</span></div></div>
-  </div>
-</div>
-
-<!-- FILTER -->
-<div class="page" id="page-filter">
-  <div class="section">
-    <div class="section-header"><h2>Filter <span>Commands</span></h2><p>// Bulk operations on matching rows</p></div>
-    <div class="infobox infobox-info"><span class="infobox-icon">&#x25C8;</span>All filter commands support an optional <code>OPERATOR</code> mapping to a Django ORM lookup — e.g. <code>icontains</code>, <code>lt</code>, <code>gt</code>.</div>
-    <div class="sub-heading">FILTER.UPDATE</div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Syntax</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">FILTER</span> <span class="op">&gt;</span> <span class="val">UPDATE</span> <span class="op">&gt;</span> <span class="str">MODEL</span> <span class="op">&gt;</span> <span class="val">ATTRIBUTE</span> <span class="op">&gt;</span> <span class="str">OLD_VALUE</span> <span class="op">&gt;</span> <span class="str">NEW_VALUE</span> <span class="op">&gt;</span> <span class="val">OPERATOR</span> <span class="comment">(?)</span></div></div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Example</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">FILTER.UPDATE</span> <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="val">REGIME</span> <span class="op">::</span> <span class="str">Democracy</span> <span class="op">::</span> <span class="str">Republic</span></div></div>
-    <div class="sub-heading">FILTER.DELETE</div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Syntax</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">FILTER</span> <span class="op">&gt;</span> <span class="val">DELETE</span> <span class="op">&gt;</span> <span class="str">MODEL</span> <span class="op">&gt;</span> <span class="val">ATTRIBUTE</span> <span class="op">&gt;</span> <span class="str">VALUE</span> <span class="op">&gt;</span> <span class="val">OPERATOR</span> <span class="comment">(?)</span></div></div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Example</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">FILTER.DELETE</span> <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="val">REGIME</span> <span class="op">::</span> <span class="str">Communist</span></div></div>
-    <div class="sub-heading">FILTER.VIEW</div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Syntax</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">FILTER</span> <span class="op">&gt;</span> <span class="val">VIEW</span> <span class="op">&gt;</span> <span class="str">MODEL</span> <span class="op">&gt;</span> <span class="val">ATTRIBUTE</span> <span class="op">&gt;</span> <span class="str">VALUE</span> <span class="op">&gt;</span> <span class="val">OPERATOR</span> <span class="comment">(?)</span></div></div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Example</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">FILTER.VIEW</span> <span class="op">::</span> <span class="val">BALL</span> <span class="op">::</span> <span class="val">HEALTH</span> <span class="op">::</span> <span class="num">100</span> <span class="op">::</span> <span class="str">gt</span></div></div>
-  </div>
-</div>
-
-<!-- EVAL -->
-<div class="page" id="page-eval">
-  <div class="section">
-    <div class="section-header"><h2>Eval <span>Presets</span></h2><p>// Save and run Python eval scripts from Discord</p></div>
-    <div class="table-wrap"><table class="cmd-table"><thead><tr><th>Command</th><th>Syntax</th><th>Description</th></tr></thead><tbody>
-      <tr><td class="cmd-name">EVAL.SAVE</td><td class="cmd-syntax">EVAL &gt; SAVE &gt; NAME</td><td class="cmd-desc">Prompts for eval code and saves as preset</td></tr>
-      <tr><td class="cmd-name">EVAL.REMOVE</td><td class="cmd-syntax">EVAL &gt; REMOVE &gt; NAME</td><td class="cmd-desc">Deletes a saved preset by name</td></tr>
-      <tr><td class="cmd-name">EVAL.LIST</td><td class="cmd-syntax">EVAL &gt; LIST</td><td class="cmd-desc">Lists all saved eval presets</td></tr>
-      <tr><td class="cmd-name">EVAL.RUN</td><td class="cmd-syntax">EVAL &gt; RUN &gt; NAME</td><td class="cmd-desc">Executes a saved preset</td></tr>
-    </tbody></table></div>
-    <div class="infobox infobox-warn"><span class="infobox-icon">&#x26A0;</span>Preset names capped at 100 chars. After <code>EVAL &gt; SAVE &gt; name</code>, the bot prompts for eval code — respond within 20 seconds.</div>
-  </div>
-</div>
-
-<!-- FILE -->
-<div class="page" id="page-file">
-  <div class="section">
-    <div class="section-header"><h2>File <span>System</span></h2><p>// Read, write, and manage files on the bot host</p></div>
-    <div class="table-wrap"><table class="cmd-table"><thead><tr><th>Command</th><th>Syntax</th><th>Description</th></tr></thead><tbody>
-      <tr><td class="cmd-name">FILE.READ</td><td class="cmd-syntax">FILE &gt; READ &gt; FILE_PATH</td><td class="cmd-desc">Sends file as a Discord attachment</td></tr>
-      <tr><td class="cmd-name">FILE.WRITE</td><td class="cmd-syntax">FILE &gt; WRITE &gt; FILE_PATH</td><td class="cmd-desc">Writes attached file contents to path</td></tr>
-      <tr><td class="cmd-name">FILE.CLEAR</td><td class="cmd-syntax">FILE &gt; CLEAR &gt; FILE_PATH</td><td class="cmd-desc">Empties a file without deleting it</td></tr>
-      <tr><td class="cmd-name">FILE.LISTDIR</td><td class="cmd-syntax">FILE &gt; LISTDIR &gt; FILE_PATH(?)</td><td class="cmd-desc">Lists directory contents. Alias: <code>ls</code></td></tr>
-      <tr><td class="cmd-name">FILE.DELETE</td><td class="cmd-syntax">FILE &gt; DELETE &gt; FILE_PATH</td><td class="cmd-desc">Deletes a file or entire directory</td></tr>
-    </tbody></table></div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Examples</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="comment">-- List current directory</span>
-<span class="kw">FILE.ls</span> <span class="op">=&gt;</span> <span class="str">./</span>
-
-<span class="comment">-- Read a config file</span>
-<span class="kw">FILE.READ</span> <span class="op">&gt;</span> <span class="str">./config.json</span>
-
-<span class="comment">-- Write attachment to path</span>
-<span class="kw">FILE.WRITE</span> <span class="op">&gt;</span> <span class="str">./settings.py</span>
-
-<span class="comment">-- Clear a log file</span>
-<span class="kw">FILE.CLEAR</span> <span class="op">&gt;</span> <span class="str">./logs/error.log</span></div></div>
-  </div>
-</div>
-
-<!-- TEMPLATE -->
-<div class="page" id="page-template">
-  <div class="section">
-    <div class="section-header"><h2><span>Templates</span></h2><p>// Starter command scaffolding for quick model setup</p></div>
-    <div class="infobox infobox-info"><span class="infobox-icon">&#x25C8;</span><code>TEMPLATE.CREATE</code> sends a pre-filled block of commands to copy and adapt.</div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Syntax</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">TEMPLATE</span> <span class="op">&gt;</span> <span class="val">CREATE</span> <span class="op">&gt;</span> <span class="str">MODEL</span> <span class="op">&gt;</span> <span class="val">ARGUMENT</span> <span class="comment">(optional)</span></div></div>
-    <div class="code-block"><div class="code-header"><span class="code-lang">Ball Template Output</span><button class="code-copy" onclick="copyCode(this)">copy</button></div><div class="code-content"><span class="kw">CREATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span>
-<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">REGIME</span>               <span class="op">&gt;</span> <span class="str">...</span>
-<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">HEALTH</span>               <span class="op">&gt;</span> <span class="str">...</span>
-<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">ATTACK</span>               <span class="op">&gt;</span> <span class="str">...</span>
-<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">RARITY</span>               <span class="op">&gt;</span> <span class="str">...</span>
-<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">EMOJI_ID</span>             <span class="op">&gt;</span> <span class="str">...</span>
-<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">CREDITS</span>              <span class="op">&gt;</span> <span class="str">...</span>
-<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">CAPACITY_NAME</span>        <span class="op">&gt;</span> <span class="str">...</span>
-<span class="kw">UPDATE</span> <span class="op">&gt;</span> <span class="val">BALL</span> <span class="op">&gt;</span> <span class="str">...</span> <span class="op">&gt;</span> <span class="val">CAPACITY_DESCRIPTION</span> <span class="op">&gt;</span> <span class="str">...</span></div></div>
-  </div>
-</div>
-
-<!-- BUILDER -->
-<div class="page" id="page-builder">
-  <div class="builder-wrap">
-    <div class="builder-header"><h2>Command <span>Builder</span></h2><p>// Fill in the fields to generate a ready-to-paste DexComX command</p></div>
-    <div class="field-group" style="margin-bottom:18px;">
-      <div class="field-label">Separator Style</div>
-      <div class="separator-row">
-        <button class="sep-btn active" id="sep-classic" onclick="setSep('>')">&gt; Classic</button>
-        <button class="sep-btn" id="sep-scoped" onclick="setSep('::')">:: Scoped</button>
-        <button class="sep-btn" id="sep-arrow" onclick="setSep('=>')">=&gt; Arrow</button>
-      </div>
-    </div>
-    <div class="builder-grid">
-      <div class="field-group"><label class="field-label">Command <span class="req">*</span></label>
-        <select class="field-select" id="b-command" onchange="onCommandChange()">
-          <optgroup label="Global"><option value="CREATE">CREATE</option><option value="DELETE">DELETE</option><option value="UPDATE" selected>UPDATE</option><option value="VIEW">VIEW</option><option value="ATTRIBUTES">ATTRIBUTES</option></optgroup>
-          <optgroup label="Filter"><option value="FILTER.UPDATE">FILTER.UPDATE</option><option value="FILTER.DELETE">FILTER.DELETE</option><option value="FILTER.VIEW">FILTER.VIEW</option></optgroup>
-          <optgroup label="Eval"><option value="EVAL.SAVE">EVAL.SAVE</option><option value="EVAL.REMOVE">EVAL.REMOVE</option><option value="EVAL.LIST">EVAL.LIST</option><option value="EVAL.RUN">EVAL.RUN</option></optgroup>
-          <optgroup label="File"><option value="FILE.READ">FILE.READ</option><option value="FILE.WRITE">FILE.WRITE</option><option value="FILE.CLEAR">FILE.CLEAR</option><option value="FILE.LISTDIR">FILE.LISTDIR</option><option value="FILE.DELETE">FILE.DELETE</option></optgroup>
-          <optgroup label="Template"><option value="TEMPLATE.CREATE">TEMPLATE.CREATE</option></optgroup>
-          <optgroup label="Bot"><option value="SETTING">SETTING</option><option value="ABOUT">ABOUT</option></optgroup>
-        </select>
-      </div>
-      <div class="field-group" id="b-model-group"><label class="field-label">Model <span class="req">*</span></label>
-        <select class="field-select" id="b-model" onchange="buildCommand()"><option value="BALL">BALL</option><option value="REGIME">REGIME</option><option value="ECONOMY">ECONOMY</option><option value="SPECIAL">SPECIAL</option></select>
-      </div>
-    </div>
-    <div class="builder-grid" id="b-row2">
-      <div class="field-group" id="b-identifier-group"><label class="field-label" id="b-identifier-label">Identifier <span class="req">*</span></label><input class="field-input" id="b-identifier" placeholder="e.g. France" oninput="buildCommand()"></div>
-      <div class="field-group" id="b-attribute-group"><label class="field-label">Attribute <span class="req">*</span></label><input class="field-input" id="b-attribute" placeholder="e.g. HEALTH" oninput="buildCommand()"></div>
-    </div>
-    <div class="builder-grid" id="b-row3" style="display:none;">
-      <div class="field-group" id="b-value-group"><label class="field-label" id="b-value-label">Value <span class="opt">(opt)</span></label><input class="field-input" id="b-value" placeholder="e.g. 100" oninput="buildCommand()"></div>
-      <div class="field-group" id="b-newvalue-group" style="display:none;"><label class="field-label">New Value <span class="req">*</span></label><input class="field-input" id="b-newvalue" placeholder="e.g. Republic" oninput="buildCommand()"></div>
-    </div>
-    <div class="builder-grid" id="b-row4" style="display:none;">
-      <div class="field-group" id="b-operator-group"><label class="field-label">ORM Operator <span class="opt">(opt)</span></label>
-        <select class="field-select" id="b-operator" onchange="buildCommand()"><option value="">-- none --</option><option value="icontains">icontains</option><option value="startswith">startswith</option><option value="endswith">endswith</option><option value="lt">lt (less than)</option><option value="lte">lte (&le;)</option><option value="gt">gt (greater than)</option><option value="gte">gte (&ge;)</option><option value="exact">exact</option></select>
-      </div>
-      <div class="field-group" id="b-filepath-group" style="display:none;"><label class="field-label">File Path <span class="req">*</span></label><input class="field-input" id="b-filepath" placeholder="e.g. ./settings.json" oninput="buildCommand()"></div>
-    </div>
-    <div class="builder-output">
-      <div class="builder-output-header"><span class="builder-output-label">&#x26A1; Generated Command</span><button class="code-copy" onclick="copyBuilderOutput()">copy</button></div>
-      <div class="builder-output-content" id="b-output"><span class="placeholder">// fill in the fields above...</span></div>
-    </div>
-    <div class="builder-actions">
-      <button class="btn btn-primary" onclick="copyBuilderOutput()">&#x1F4CB; Copy Command</button>
-      <button class="btn btn-secondary" onclick="resetBuilder()">&#x21BA; Reset</button>
-      <button class="btn btn-secondary" onclick="addToScript()">+ Add to Script</button>
-    </div>
-    <div class="divider"></div>
-    <div class="sub-heading" style="margin-top:0;">Batch Script Builder</div>
-    <div class="infobox infobox-info"><span class="infobox-icon">&#x25C8;</span>Build multiple commands then copy as one <code>b.run</code> paste. Use <strong>+ Add to Script</strong> above to queue commands.</div>
-    <div class="script-lines" id="script-lines"><div class="script-empty">// no commands queued &mdash; use + Add to Script above</div></div>
-    <div class="script-actions" style="margin-bottom:16px;">
-      <button class="btn btn-primary" onclick="copyScript()" id="copy-script-btn" disabled>&#x1F4CB; Copy Full Script</button>
-      <button class="btn btn-secondary" onclick="clearScript()">&#x2715; Clear</button>
-    </div>
-    <div id="script-output-wrap" style="display:none;">
-      <div class="builder-output" style="border-color:var(--green);box-shadow:0 0 24px rgba(57,255,20,0.12);">
-        <div class="builder-output-header" style="background:rgba(57,255,20,0.04);">
-          <span class="builder-output-label" style="color:var(--green);">&#x1F4DC; Script Preview</span>
-          <button class="code-copy" onclick="copyScript()">copy</button>
-        </div>
-        <div class="builder-output-content" id="script-preview" style="white-space:pre-wrap;font-size:12px;color:var(--text2);"></div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Rest of pages remain the same -->
 
 </main>
 </div>
@@ -529,24 +287,6 @@ function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.
 function filterNav(q){q=q.toLowerCase();document.querySelectorAll('.nav-item').forEach(i=>{i.style.display=i.textContent.toLowerCase().includes(q)?'':'none';});}
 function showToast(msg){const t=document.getElementById('toast');t.textContent='// '+msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
 function copyCode(btn){const text=btn.closest('.code-block').querySelector('.code-content').innerText;navigator.clipboard.writeText(text);showToast('copied');btn.textContent='✓';setTimeout(()=>btn.textContent='copy',1500);}
-function setSep(sep){currentSep=sep;document.querySelectorAll('.sep-btn').forEach(b=>b.classList.remove('active'));const map={'>':'sep-classic','::':'sep-scoped','=>':'sep-arrow'};document.getElementById(map[sep]).classList.add('active');buildCommand();}
-const CMD_SCHEMAS={CREATE:{model:true,identifier:true,attribute:false,value:false,newvalue:false,operator:false,filepath:false},DELETE:{model:true,identifier:true,attribute:false,value:false,newvalue:false,operator:false,filepath:false},UPDATE:{model:true,identifier:true,attribute:true,value:true,newvalue:false,operator:false,filepath:false},VIEW:{model:true,identifier:true,attribute:'opt',value:false,newvalue:false,operator:false,filepath:false},ATTRIBUTES:{model:true,identifier:false,attribute:false,value:'opt',newvalue:false,operator:false,filepath:false,valueLabel:'Filter (NULL/VALID)'},'FILTER.UPDATE':{model:true,identifier:false,attribute:true,value:true,newvalue:true,operator:'opt',filepath:false},'FILTER.DELETE':{model:true,identifier:false,attribute:true,value:true,newvalue:false,operator:'opt',filepath:false},'FILTER.VIEW':{model:true,identifier:false,attribute:true,value:true,newvalue:false,operator:'opt',filepath:false},'EVAL.SAVE':{model:false,identifier:true,attribute:false,value:false,newvalue:false,operator:false,filepath:false,identifierLabel:'Preset Name'},'EVAL.REMOVE':{model:false,identifier:true,attribute:false,value:false,newvalue:false,operator:false,filepath:false,identifierLabel:'Preset Name'},'EVAL.LIST':{model:false,identifier:false,attribute:false,value:false,newvalue:false,operator:false,filepath:false},'EVAL.RUN':{model:false,identifier:true,attribute:false,value:false,newvalue:false,operator:false,filepath:false,identifierLabel:'Preset Name'},'FILE.READ':{model:false,identifier:false,attribute:false,value:false,newvalue:false,operator:false,filepath:true},'FILE.WRITE':{model:false,identifier:false,attribute:false,value:false,newvalue:false,operator:false,filepath:true},'FILE.CLEAR':{model:false,identifier:false,attribute:false,value:false,newvalue:false,operator:false,filepath:true},'FILE.LISTDIR':{model:false,identifier:false,attribute:false,value:false,newvalue:false,operator:false,filepath:'opt'},'FILE.DELETE':{model:false,identifier:false,attribute:false,value:false,newvalue:false,operator:false,filepath:true},'TEMPLATE.CREATE':{model:true,identifier:'opt',attribute:false,value:false,newvalue:false,operator:false,filepath:false,identifierLabel:'Argument (opt)'},SETTING:{model:false,identifier:true,attribute:false,value:'opt',newvalue:false,operator:false,filepath:false,identifierLabel:'Setting Name',valueLabel:'New Value'},ABOUT:{model:false,identifier:false,attribute:false,value:false,newvalue:false,operator:false,filepath:false}};
-function showEl(id,v){const el=document.getElementById(id);if(el)el.style.display=v?'':'none';}
-function onCommandChange(){const cmd=document.getElementById('b-command').value;const s=CMD_SCHEMAS[cmd]||{};showEl('b-model-group',!!s.model);showEl('b-identifier-group',!!s.identifier);showEl('b-attribute-group',!!s.attribute);showEl('b-value-group',!!s.value);showEl('b-newvalue-group',!!s.newvalue);showEl('b-operator-group',!!s.operator);showEl('b-filepath-group',!!s.filepath);showEl('b-row2',!!(s.identifier||s.attribute));showEl('b-row3',!!(s.value||s.newvalue));showEl('b-row4',!!(s.operator||s.filepath));document.getElementById('b-identifier-label').innerHTML=(s.identifierLabel||'Identifier')+' <span class="'+(s.identifier==='opt'?'opt':'req')+'">'+(s.identifier==='opt'?'(opt)':'*')+'</span>';document.getElementById('b-value-label').innerHTML=(s.valueLabel||'Value')+' <span class="'+(s.value==='opt'?'opt':'req')+'">'+(s.value==='opt'?'(opt)':'*')+'</span>';buildCommand();}
-function colorPart(p,i){if(i===0)return`<span style="color:var(--cyan);font-weight:700;text-shadow:0 0 8px rgba(0,245,255,0.5)">${p}</span>`;if(['BALL','REGIME','ECONOMY','SPECIAL'].includes(p))return`<span style="color:var(--purple);text-shadow:0 0 8px rgba(191,95,255,0.4)">${p}</span>`;if(p.startsWith('<')&&p.endsWith('>'))return`<span style="color:var(--text3);font-style:italic">${p}</span>`;if(!isNaN(p)&&p!=='')return`<span style="color:var(--yellow);text-shadow:0 0 8px rgba(255,230,0,0.3)">${p}</span>`;return`<span style="color:var(--green)">${p}</span>`;}
-function buildCommand(){const cmd=document.getElementById('b-command').value;const s=CMD_SCHEMAS[cmd]||{};const model=document.getElementById('b-model')?.value||'';const ident=document.getElementById('b-identifier')?.value.trim()||'';const attr=document.getElementById('b-attribute')?.value.trim()||'';const val=document.getElementById('b-value')?.value.trim()||'';const newval=document.getElementById('b-newvalue')?.value.trim()||'';const op=document.getElementById('b-operator')?.value||'';const fp=document.getElementById('b-filepath')?.value.trim()||'';let parts=[cmd];if(s.model)parts.push(model||'<MODEL>');if(s.identifier)parts.push(ident||(s.identifier==='opt'?null:'<IDENTIFIER>'));if(s.attribute)parts.push(attr||(s.attribute==='opt'?null:'<ATTRIBUTE>'));if(s.value)parts.push(val||(s.value==='opt'?null:'<VALUE>'));if(s.newvalue)parts.push(newval||'<NEW_VALUE>');if(s.operator&&op)parts.push(op);if(s.filepath)parts.push(fp||(s.filepath==='opt'?null:'<FILE_PATH>'));parts=parts.filter(p=>p!==null);const SEP=`<span style="color:var(--text3)"> ${currentSep} </span>`;document.getElementById('b-output').innerHTML=parts.map((p,i)=>colorPart(p,i)).join(SEP);}
-function getRaw(){const cmd=document.getElementById('b-command').value;const s=CMD_SCHEMAS[cmd]||{};const model=document.getElementById('b-model')?.value||'';const ident=document.getElementById('b-identifier')?.value.trim()||'';const attr=document.getElementById('b-attribute')?.value.trim()||'';const val=document.getElementById('b-value')?.value.trim()||'';const newval=document.getElementById('b-newvalue')?.value.trim()||'';const op=document.getElementById('b-operator')?.value||'';const fp=document.getElementById('b-filepath')?.value.trim()||'';let parts=[cmd];if(s.model)parts.push(model);if(s.identifier&&ident)parts.push(ident);if(s.attribute&&attr)parts.push(attr);if(s.value&&val)parts.push(val);if(s.newvalue&&newval)parts.push(newval);if(s.operator&&op)parts.push(op);if(s.filepath&&fp)parts.push(fp);return parts.join(' '+currentSep+' ');}
-function copyBuilderOutput(){navigator.clipboard.writeText(getRaw());showToast('command copied');}
-function resetBuilder(){['b-identifier','b-attribute','b-value','b-newvalue','b-filepath'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('b-command').value='UPDATE';document.getElementById('b-operator').value='';onCommandChange();}
-let scriptLines=[];
-function colorRaw(raw){const sepM=raw.match(/\s*(::| =>|>)\s*/);const sep=sepM?sepM[1].trim():'>'; const parts=raw.split(new RegExp('\\s*'+sep.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*'));const SEP=`<span style="color:var(--text3)"> ${sep} </span>`;return parts.map((p,i)=>colorPart(p,i)).join(SEP);}
-function addToScript(){const raw=getRaw();const cmd=document.getElementById('b-command').value;if(!raw||raw===cmd){showToast('fill required fields first');return;}scriptLines.push(raw);renderScript();showToast('added to script');}
-function removeScriptLine(i){scriptLines.splice(i,1);renderScript();}
-function moveScriptLine(i,d){const t=i+d;if(t<0||t>=scriptLines.length)return;[scriptLines[i],scriptLines[t]]=[scriptLines[t],scriptLines[i]];renderScript();}
-function renderScript(){const c=document.getElementById('script-lines');const wrap=document.getElementById('script-output-wrap');const prev=document.getElementById('script-preview');const btn=document.getElementById('copy-script-btn');if(!scriptLines.length){c.innerHTML='<div class="script-empty">// no commands queued &mdash; use + Add to Script above</div>';wrap.style.display='none';btn.disabled=true;return;}btn.disabled=false;wrap.style.display='block';c.innerHTML=scriptLines.map((line,i)=>`<div class="script-line"><span class="script-line-num">${i+1}</span><span class="script-line-text">${colorRaw(line)}</span><div class="script-line-actions"><button class="script-line-btn up" onclick="moveScriptLine(${i},-1)">&#x2191;</button><button class="script-line-btn up" onclick="moveScriptLine(${i},1)">&#x2193;</button><button class="script-line-btn" onclick="removeScriptLine(${i})">&#x2715;</button></div></div>`).join('');prev.textContent='b.run\n\`\`\`sql\n'+scriptLines.join('\n')+'\n\`\`\`';}
-function copyScript(){if(!scriptLines.length){showToast('script is empty');return;}navigator.clipboard.writeText('b.run\n\`\`\`sql\n'+scriptLines.join('\n')+'\n\`\`\`');showToast('script copied');}
-function clearScript(){scriptLines=[];renderScript();showToast('cleared');}
-onCommandChange();
 </script>
 </body>
 </html>

@@ -1,4 +1,6 @@
 import traceback
+import subprocess
+import sys
 from typing import TYPE_CHECKING
 
 import discord
@@ -7,6 +9,7 @@ from discord.ext import commands
 
 from .parser import DexScriptParser
 from .utils import Utils, config
+from .extension_manager import ExtensionManager
 
 if TYPE_CHECKING:
     from ballsdex.core.bot import BallsDexBot
@@ -21,6 +24,7 @@ class DexScript(commands.Cog):
 
     def __init__(self, bot: "BallsDexBot"):
         self.bot = bot
+        self.extension_manager = ExtensionManager(bot)
 
     @commands.command()
     @commands.is_owner()
@@ -50,29 +54,97 @@ class DexScript(commands.Cog):
 
             await ctx.message.add_reaction("✅")
 
+    @commands.group(name="admin", invoke_without_command=True)
+    @commands.is_owner()
+    async def admin(self, ctx: commands.Context):
+        """
+        DexComX admin commands.
+        """
+        await ctx.send_help(ctx.command)
+
+    @admin.command(name="extension")
+    @commands.is_owner()
+    async def extension(self, ctx: commands.Context, action: str, url: str = None):
+        """
+        Manage BallsDex extensions.
+
+        Parameters
+        ----------
+        action: str
+          Action to perform: add, remove, list, update
+        url: str
+          Git URL for the extension (required for add)
+        
+        Examples
+        --------
+        /admin extension add https://github.com/User/Package.git
+        /admin extension remove package_name
+        /admin extension list
+        /admin extension update package_name
+        """
+        action = action.lower()
+
+        if action == "add":
+            if not url:
+                await ctx.send("❌ URL is required for adding extensions.\n"
+                              "Usage: `/admin extension add <git_url>`")
+                return
+            
+            await self.extension_manager.add_extension(ctx, url)
+
+        elif action == "remove":
+            if not url:
+                await ctx.send("❌ Package name is required for removing extensions.\n"
+                              "Usage: `/admin extension remove <package_name>`")
+                return
+            
+            await self.extension_manager.remove_extension(ctx, url)
+
+        elif action == "list":
+            await self.extension_manager.list_extensions(ctx)
+
+        elif action == "update":
+            if not url:
+                await ctx.send("❌ Package name is required for updating extensions.\n"
+                              "Usage: `/admin extension update <package_name>`")
+                return
+            
+            await self.extension_manager.update_extension(ctx, url)
+
+        else:
+            await ctx.send(f"❌ Unknown action: `{action}`\n"
+                          "Valid actions: `add`, `remove`, `list`, `update`")
+
     @commands.command()
     @commands.is_owner()
     async def about(self, ctx: commands.Context):
         """
         Displays information about DexComX.
         """
-        guide_link = "https://github.com/Dexscript-V3/Dexscript-V3/blob/main/README.md"
-
-        description = (
-            "DexComX is a rebranded scripting toolkit for Ballsdex created by haymooed. "
-            "It modernizes command execution with aliases and multi-separator parsing so scripts are easier to write and maintain. "
-            "Use it for bulk content operations across balls, regimes, economy, and specials.\n\n"
-            f"Read the [DexComX command reference](<{guide_link}>) for full syntax and examples."
-        )
-
         embed = discord.Embed(
             title="DexComX",
-            description=description,
+            description=(
+                "DexComX is a script-driven admin toolkit for BallsDex.\n\n"
+                "**Original Creator:** [Cayla (DexScript)](https://github.com/Caylies/DexScript)\n"
+                "**Current Maintainer:** haymooed\n\n"
+                "📖 [Full Documentation](https://haymooed.github.io/DexComX/)\n"
+                "💻 [GitHub Repository](https://github.com/Haymooed/DexComX)"
+            ),
             color=discord.Color.from_str("#03BAFC"),
         )
 
-        
-        embed.set_footer(text=f"DexComX {__version__}")
+        embed.add_field(
+            name="Features",
+            value=(
+                "• Speed aliases (`set`, `show`, `rm`, `ls`)\n"
+                "• Bulk filter operations\n"
+                "• Eval presets & file management\n"
+                "• Extension package manager"
+            ),
+            inline=False
+        )
+
+        embed.set_footer(text=f"DexComX v{__version__}")
 
         await ctx.send(embed=embed)
 
@@ -80,14 +152,14 @@ class DexScript(commands.Cog):
     @commands.is_owner()
     async def setting(self, ctx: commands.Context, setting: str, value: str | None = None):
         """
-        Changes a setting based on the value provided.
+        Changes a DexComX setting.
 
         Parameters
         ----------
         setting: str
           The setting you want to toggle.
         value: str | None
-          The value you want to set the setting to.
+          The value you want to set. For booleans, leave empty to toggle.
         """
         setting = setting.lower()
 

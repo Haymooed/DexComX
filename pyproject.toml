@@ -1,13 +1,14 @@
 [project]
 name = "dexcomx"
-version = "0.0.0"
-description = "DexComX is a scripting command suite for Ballsdex with modern aliases and flexible command separators."
+version = "-.0.0"
+description = "DexComX is a scripting command suite for BallsDex with speed aliases and extension package manager."
 authors = [
     { name = "haymooed" }
 ]
 
 dependencies = [
     "python-dateutil>=2.9.0",
+    "toml>=0.10.2",
 ]
 
 [build-system]
