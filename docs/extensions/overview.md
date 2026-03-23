@@ -25,12 +25,12 @@ editable = false
 
 **Now:**
 ```
-/admin extension add https://github.com/User/Package.git
+/dexadmin extension add https://github.com/User/Package.git
 ```
 
 ## Available Commands
 
-All extension manager commands are under the `/admin extension` group:
+All extension manager commands are under the `/dexadmin extension` group:
 
 - **[add](add.md)** - Install a new extension
 - **[remove](remove.md)** - Remove an installed extension
@@ -42,7 +42,7 @@ All extension manager commands are under the `/admin extension` group:
 ### Install a Package
 
 ```
-/admin extension add https://github.com/Haymooed/BallsDex-Merchant-Package.git
+/dexadmin extension add https://github.com/Haymooed/BallsDex-Merchant-Package.git
 ```
 
 DexComX will:
@@ -55,7 +55,7 @@ DexComX will:
 ### List Installed Packages
 
 ```
-/admin extension list
+/dexadmin extension list
 ```
 
 Shows all packages with their URLs and status.
@@ -63,7 +63,7 @@ Shows all packages with their URLs and status.
 ### Update a Package
 
 ```
-/admin extension update ballsdex_merchant_package
+/dexadmin extension update ballsdex_merchant_package
 ```
 
 Pulls the latest version and reinstalls.
@@ -71,7 +71,7 @@ Pulls the latest version and reinstalls.
 ### Remove a Package
 
 ```
-/admin extension remove ballsdex_merchant_package
+/dexadmin extension remove ballsdex_merchant_package
 ```
 
 Removes from config and unloads the extension.
@@ -80,7 +80,7 @@ Removes from config and unloads the extension.
 
 ### Installation Flow
 
-1. User runs `/admin extension add <url>`
+1. User runs `/dexadmin extension add <url>`
 2. DexComX validates the git URL
 3. Package is downloaded via `pip install git+<url>`
 4. Entry is added to `config/extra.toml`
@@ -101,7 +101,7 @@ editable = false
 
 ## Requirements
 
-- Bot owner permissions (all `/admin` commands are owner-only)
+- Bot owner permissions (all `/dexadmin` commands are owner-only)
 - Git-based package URLs (GitHub, GitLab, etc.)
 - Package must follow BallsDex package structure
 
@@ -113,9 +113,9 @@ editable = false
 
 ## Best Practices
 
-1. **Always list first** - Run `/admin extension list` before adding
+1. **Always list first** - Run `/dexadmin extension list` before adding
 2. **Test in development** - Try new packages on a test bot first
-3. **Keep updated** - Regularly update packages with `/admin extension update`
+3. **Keep updated** - Regularly update packages with `/dexadmin extension update`
 4. **Remove unused** - Clean up packages you're not using
 
 ## Troubleshooting
@@ -126,11 +126,11 @@ Try restarting the bot. Some packages need a full restart to activate.
 
 ### "Package already installed"
 
-Use `/admin extension list` to see what's installed, or use `update` instead of `add`.
+Use `/dexadmin extension list` to see what's installed, or use `update` instead of `add`.
 
 ### Permission errors
 
-Ensure you're the bot owner. All `/admin` commands are owner-only.
+Ensure you're the bot owner. All `/dexadmin` commands are owner-only.
 
 ## See Also
 

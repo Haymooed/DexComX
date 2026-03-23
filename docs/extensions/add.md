@@ -5,7 +5,7 @@ Install a new BallsDex package from a git repository.
 ## Syntax
 
 ```
-/admin extension add <url>
+/dexadmin extension add <url>
 ```
 
 ## Arguments
@@ -28,19 +28,19 @@ Install a new BallsDex package from a git repository.
 ### Install from GitHub (HTTPS)
 
 ```
-/admin extension add https://github.com/Haymooed/BallsDex-Merchant-Package.git
+/dexadmin extension add https://github.com/Haymooed/BallsDex-Merchant-Package.git
 ```
 
 ### Install from GitHub (SSH)
 
 ```
-/admin extension add git@github.com:User/Package.git
+/dexadmin extension add git@github.com:User/Package.git
 ```
 
 ### Install from GitLab
 
 ```
-/admin extension add https://gitlab.com/user/package.git
+/dexadmin extension add https://gitlab.com/user/package.git
 ```
 
 ## Output
@@ -99,7 +99,7 @@ Package names are auto-generated from the URL:
 ### Check if Loaded
 
 ```
-/admin extension list
+/dexadmin extension list
 ```
 
 Should show your new package with status `✅ Enabled`.
@@ -130,7 +130,7 @@ Example: `https://github.com/User/Package.git`
 Installation took too long. The package may still be installing in the background.
 ```
 
-**Solution:** Wait a few minutes and check `/admin extension list`.
+**Solution:** Wait a few minutes and check `/dexadmin extension list`.
 
 ### Permission Errors
 
@@ -143,7 +143,7 @@ Installation took too long. The package may still be installing in the backgroun
 
 ## Best Practices
 
-1. **Check before installing** - Run `/admin extension list` first
+1. **Check before installing** - Run `/dexadmin extension list` first
 2. **Test on development bot** - Try new packages in a test environment
 3. **Read package docs** - Check the package's README for special requirements
 4. **Monitor logs** - Watch bot logs during installation for errors
