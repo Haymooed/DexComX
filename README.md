@@ -2,7 +2,7 @@
 
 DexComX is a script-driven admin toolkit for BallsDex that lets owners create, update, filter, view, and remove model data quickly from Discord.
 
-**Originally created by [Cayla (DexScript)](https://github.com/Caylies/DexScript)** — DexComX builds upon the original DexScript foundation with improved command parsing, speed aliases, and extension management.
+**Originally created by [Cayla (DexScript)](https://github.com/Caylies/DexScript)** — DexComX builds upon the original DexScript foundation with modernized syntax and improved command parsing.
 
 ## Quick Install
 
@@ -20,68 +20,33 @@ Then restart your BallsDex bot.
 
 ## Documentation
 
-Full command reference: **https://haymooed.github.io/DexComX/**
+Full command reference and interactive builder: **https://haymooed.github.io/DexComX/**
 
 ---
 
 ## What's New in DexComX
 
-- **Scoped commands**: `FILTER.UPDATE > BALL > REGIME > Democracy > Republic`
+- **Multiple separators**: Use `>`, `::`, or `=>` interchangeably
+- **Scoped mode**: `FILTER.UPDATE :: BALL :: REGIME :: Democracy :: Republic`
 - **Speed aliases**: `set`, `show`, `rm`, `ls`, `fields`
 - **Batch execution**: Paste entire scripts with `b.run` prefix
 - **Comment support**: Lines starting with `--` are ignored
-- **🆕 Extension Manager**: Install BallsDex packages directly from Discord
-
-## Extension Manager
-
-Manage BallsDex packages without editing config files!
-
-### Add Extension
-```
-/admin extension add https://github.com/User/Package.git
-```
-
-### Remove Extension
-```
-/admin extension remove package_name
-```
-
-### List Installed Extensions
-```
-/admin extension list
-```
-
-### Update Extension
-```
-/admin extension update package_name
-```
-
-### How It Works
-
-1. **Add**: Downloads the package from git, adds it to `config/extra.toml`, and attempts to load it
-2. **Remove**: Removes from config and unloads the extension
-3. **List**: Shows all installed packages with their URLs and status
-4. **Update**: Pulls latest version from git and reinstalls
-
-**Note:** Some changes may require a bot restart to fully apply.
-
----
 
 ## Command Format
 
-### Standard Mode
+### Classic Mode (legacy compatible)
 ```sql
 UPDATE > BALL > France > HEALTH > 100
 ```
 
 ### Scoped Mode
 ```sql
-FILTER.UPDATE > BALL > REGIME > Democracy > Republic
+FILTER.UPDATE :: BALL :: REGIME :: Democracy :: Republic
 ```
 
 ### Slash-Style
 ```sql
-/show > BALL > France > HEALTH
+/show => BALL => France => HEALTH
 ```
 
 ## Core Commands
@@ -160,62 +125,6 @@ or
 ```
 o.run <script>
 ```
-
-## Examples
-
-### Creating a New Ball
-```sql
-CREATE > BALL > Germany
-UPDATE > BALL > Germany > HEALTH > 100
-UPDATE > BALL > Germany > ATTACK > 90
-UPDATE > BALL > Germany > REGIME > Democracy
-UPDATE > BALL > Germany > RARITY > 1.0
-```
-
-### Bulk Operations
-```sql
--- Change all Democracy regimes to Republic
-FILTER.UPDATE > BALL > REGIME > Democracy > Republic
-
--- View all balls with health > 100
-FILTER.VIEW > BALL > HEALTH > 100 > gt
-
--- Delete all balls with Communist regime
-FILTER.DELETE > BALL > REGIME > Communist
-```
-
-### Using Aliases
-```sql
--- set is alias for UPDATE
-set > BALL > France > HEALTH > 105
-
--- show is alias for VIEW
-show > BALL > France
-
--- FILE.ls is alias for FILE.LISTDIR
-FILE.ls > ./
-```
-
-### Managing Extensions
-```sql
--- Install a new package
-/admin extension add https://github.com/Haymooed/BallsDex-Merchant-Package.git
-
--- List all packages
-/admin extension list
-
--- Update a package
-/admin extension update ballsdex_merchant_package
-
--- Remove a package
-/admin extension remove ballsdex_merchant_package
-```
-
-## Requirements
-
-- Python 3.10+
-- BallsDex v3+
-- toml library (for extension manager)
 
 ## Credits
 
