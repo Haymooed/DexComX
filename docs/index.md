@@ -21,7 +21,6 @@ Then restart your BallsDex bot.
 
 ## Features
 
-- **Speed Aliases**: `set`, `show`, `rm`, `ls`, `fields` — faster commands
 - **Scoped Commands**: `FILTER.UPDATE > BALL > REGIME > Democracy > Republic`
 - **Bulk Filter Operations**: Mass update, delete, or view rows
 - **Eval Presets**: Save and run Python eval scripts
