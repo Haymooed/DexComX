@@ -1,0 +1,98 @@
+site_name: DexComX Wiki
+site_url: https://haymooed.github.io/DexComX/
+repo_url: https://github.com/Haymooed/DexComX
+repo_name: Haymooed/DexComX
+
+theme:
+  name: material
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: cyan
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: cyan
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - Syntax:
+    - Overview: syntax/overview.md
+    - Aliases: syntax/aliases.md
+    - Comments: syntax/comments.md
+    - Batch Execution: syntax/batch.md
+  - Commands:
+    - Global:
+      - CREATE: commands/create.md
+      - DELETE: commands/delete.md
+      - UPDATE: commands/update.md
+      - VIEW: commands/view.md
+      - ATTRIBUTES: commands/attributes.md
+    - Filter:
+      - FILTER.UPDATE: commands/filter-update.md
+      - FILTER.DELETE: commands/filter-delete.md
+      - FILTER.VIEW: commands/filter-view.md
+    - File System:
+      - FILE.READ: commands/file-read.md
+      - FILE.WRITE: commands/file-write.md
+      - FILE.CLEAR: commands/file-clear.md
+      - FILE.LISTDIR: commands/file-listdir.md
+      - FILE.DELETE: commands/file-delete.md
+    - Eval Presets:
+      - EVAL.SAVE: commands/eval-save.md
+      - EVAL.REMOVE: commands/eval-remove.md
+      - EVAL.LIST: commands/eval-list.md
+      - EVAL.RUN: commands/eval-run.md
+    - Templates:
+      - TEMPLATE.CREATE: commands/template-create.md
+  - Extension Manager:
+    - Overview: extensions/overview.md
+    - Add Extension: extensions/add.md
+    - Remove Extension: extensions/remove.md
+    - List Extensions: extensions/list.md
+    - Update Extension: extensions/update.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+  - tables
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Haymooed/DexComX
+  generator: false
+
+copyright: |
+  Originally created by <a href="https://github.com/Caylies/DexScript">Cayla (DexScript)</a> &mdash; 
+  Maintained by <a href="https://github.com/Haymooed">haymooed</a>
